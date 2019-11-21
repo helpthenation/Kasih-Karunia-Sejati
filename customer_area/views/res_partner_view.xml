@@ -18,7 +18,7 @@
 	<field name="model">res.partner</field>
 	<field name="inherit_id" ref="base.view_partner_form" />
 	<field name="arch" type="xml">
-	    <field name="country_id" position="after">
+	    <field name="website" position="before">
 	    <field name="region_id" placeholder="Region" options='{"no_open": True, "no_create": True}'
 		    attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
 		<field name="area_id" placeholder="Area" options='{"no_open": True, "no_create": True}'
