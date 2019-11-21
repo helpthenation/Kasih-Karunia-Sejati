@@ -14,3 +14,4 @@ class ResPartnerArea(models.Model):
 
     name = fields.Char("Name", required=True)
     code = fields.Char('Code', size=15)
+    region_id = fields.Many2one('res.partner.region', 'Region')

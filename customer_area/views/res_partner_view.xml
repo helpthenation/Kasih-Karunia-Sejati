@@ -2,10 +2,14 @@
 <odoo>
 
     <record id="res_partner_view_area_search" model="ir.ui.view">
-	<field name="name">View.lost.customers</field>
+	<field name="name">View.area.region.customers</field>
 	<field name="model">res.partner</field>
 	<field name="inherit_id" ref="base.view_res_partner_filter"/>
 	<field name="arch" type="xml">
+		<field name="category_id" position="after">
+			<field name="area_id" string="Area" filter_domain="[('area_id','ilike', self)]"/>
+			<field name="region_id" string="Region" filter_domain="[('region_id','ilike', self)]"/>
+		</field>
 	    <group name="group_by" position="inside">
 		<filter string="Area" context="{'group_by': 'area_id'}"/>
 		<filter string="Region" context="{'group_by': 'region_id'}"/>

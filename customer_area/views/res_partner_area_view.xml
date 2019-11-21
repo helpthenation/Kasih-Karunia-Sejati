@@ -21,6 +21,7 @@
                     <group>
                     <field name="name"/>
                     <field name="code"/>
+                    <field name="region_id" required="1"/>
                     </group>
                 </sheet>
             </form>
