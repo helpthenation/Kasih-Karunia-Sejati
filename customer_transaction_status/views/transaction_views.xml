@@ -1,0 +1,21 @@
+<odoo>
+  <data>
+    
+    <record model="ir.ui.view" id="view_partner_property_form_inherit">
+      <field name="name">view.partner.property.form.inherit</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="account.view_partner_property_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//page[@name='accounting']/group/group/field[@name='invoice_status']" 
+          position="after">
+          <label string="Transaction Status"/>
+            <div>
+              <field name="code"/>
+              <field name="transaction_status" readonly="True"/>
+            </div>
+        </xpath>
+      </field>
+    </record>
+  
+  </data>
+</odoo>
