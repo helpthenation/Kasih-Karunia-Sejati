@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="unpaid_inv_sequence" model="ir.sequence">
+        <field name="name">Unpaid Inv Sequence</field>
+        <field name="code">unpaid.invoice</field>
+        <field name="prefix">DPP/%(range_year)s/%(month)s/</field>
+        <field name="padding">5</field>
+        <field eval="False" name="company_id"/>
+    </record>
+
+</odoo>

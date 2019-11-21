@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+    <!-- Scheduled Action for reset sequence after change month -->
+        <record id="ir_cron_monthely_sequence_unpaid_inv" model="ir.cron">
+            <field name="name">Reset Unpaid INV Sequence</field>
+            <field name="interval_number">1</field>
+            <field name="active">True</field>
+            <!--field name="interval_type">months</field-->
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field eval="True" name="doall"/>
+            <field eval="'unpaid.invoice'" name="model"/>
+            <field eval="'reset_sequence'" name="function"/>
+            <field eval="'()'" name="args"/>
+            <field name="priority" eval="5" />
+        </record>
+    </data>
+</odoo>

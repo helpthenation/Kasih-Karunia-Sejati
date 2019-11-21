@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report 
+            string="Unpaid Invoice" 
+            id="report_unpaid_inv" 
+            model="unpaid.invoice" 
+            report_type="qweb-pdf"
+            name="unpaid_invoice_list.report_generate_unpaid_inv" 
+            file="unpaid_invoice_list.report_generate_unpaid_inv"
+        />
+    </data>
+</odoo>
