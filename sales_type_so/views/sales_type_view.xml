@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <!-- Sales Type SO -->
+        <record id="sales_type_form_view" model="ir.ui.view">
+			<field name="name">sales.type.so.form.view</field>
+			<field name="model">sales.type.so</field>
+			<field name="arch" type="xml">
+				<form string="Sales Type">
+					<sheet>
+						<div class="oe_title">
+                            <label for="name" string="Sales Type" class="oe_edit_only"/>
+                            <h1><field name="name" placeholder="Sales Type"/></h1>
+                        </div>
+                        <group string="Details">
+                            <group>
+                                <field name="code"/>
+                            </group>
+                            <group>
+                                <field name="action"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description"/>
+                        </group>
+					</sheet>
+			    </form>
+			</field>
+		</record>
+		
+		<record id="sales_type_tree_view" model="ir.ui.view">
+			<field name="name">sales.type.so.tree.view</field>
+			<field name="model">sales.type.so</field>
+			<field name="arch" type="xml">
+				<tree string="Sales Type">
+					<field name="name" string="Display Name"/>
+					<field name="code"/>
+					<field name="action"/>
+					<field name="description"/>
+				</tree>
+			</field>
+		</record>
+		
+		<record id="sales_type_so_search" model="ir.ui.view">
+            <field name="name">sales.type.so.search</field>
+            <field name="model">sales.type.so</field>
+            <field name="arch" type="xml">
+                <search string="SalesType Search">
+                    <field name="name"/>
+                    <field name="code"/>
+                </search>
+            </field>
+        </record>
+
+		<record id="action_sales_type" model="ir.actions.act_window">
+			<field name="name">Sales Type</field>
+			<field name="res_model">sales.type.so</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p>
+					Sales Type
+				</p>
+			</field>
+		</record>
+		
+		<menuitem 
+		    id="menu_sales_type_so" 
+		    name="Sales Type"
+			parent="sales_team.menu_sale_config" 
+			action="action_sales_type" 
+			sequence="60" />
+			
+		<!-- Sale Order -->
+		<record model="ir.ui.view" id="view_order_form_sales_type">
+            <field name="name">sale.order.form.sales.type</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/group/group/field[@name='partner_shipping_id']" position="after">
+                    <field name="sales_type_id"/>
+                </xpath>
+            </field>
+        </record>
+        
+    </data>
+</openerp>
