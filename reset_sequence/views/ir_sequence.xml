@@ -1,0 +1,32 @@
+<odoo>
+    <data>
+        <record id="add_reset_seq_in_sequence_view" model="ir.ui.view">
+            <field name="name">ir.sequence.form.view</field>
+            <field name="model">ir.sequence</field>
+            <field name="inherit_id" ref="base.sequence_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/group/group/field[@name='implementation']" position="after">
+                    <field name="reset" widget="radio"/>
+		    <field name="reset_sequence" widget="radio" attrs="{'invisible': [('reset', '=', 'disable')]}"/>
+                </xpath>
+                <xpath expr="//form/sheet/notebook/page/group/group/field[@name='use_date_range']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('reset', '=','enable')]}
+				</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+    
+    <record id="ir_cron_reset_sequence" model="ir.cron">
+        <field name="name">Reset Sequence</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="True" name="doall"/>
+        <field eval="'ir.sequence'" name="model"/>
+        <field eval="'reset_sequnce'" name="function"/>
+        <field eval="'()'" name="args"/>
+        <field name="priority" eval="5" />
+    </record>
+</odoo>
