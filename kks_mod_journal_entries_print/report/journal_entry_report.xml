@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_picking_waves_inherit" inherit_id="journal_entries_print.journal_entries_report_id">
+            <xpath expr="//t/t/t/div/div[2]/center/table/tr[2]" position="after">
+                <tr>
+                    <td>
+
+                    </td>
+                    <td>
+                        Created By: <span t-field="o.create_uid"/>
+                    </td>
+                </tr>
+            </xpath>
+        </template>
+    </data>
+</odoo>
