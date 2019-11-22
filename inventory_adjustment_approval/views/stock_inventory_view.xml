@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <data>
+
+    <record id="view_inventory_form_inherit_pdp" model="ir.ui.view">
+        <field name="name">stock.inventory.form.pdp</field>
+        <field name="model">stock.inventory</field>
+        <field name="inherit_id" ref="stock.view_inventory_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute name="statusbar_visible">draft,confirm,missed,lock,done</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_done']" position="before">
+                <button name="action_calculate_inventory" states="confirm" string="Calculate Inventory" type="object" class="oe_highlight" groups="stock.group_stock_manager"/>
+                <button name="action_request_approve" states="missed" string="Request Approval" type="object" class="oe_highlight"/>
+            </xpath>
+            <xpath expr="//button[@name='action_done']" position="attributes">
+                <attribute name="states">lock</attribute>
+                <attribute name="string">Approve</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_cancel_draft']" position="attributes">
+                <attribute name="states">lock</attribute>
+                <attribute name="string">Reject</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']//field[@name='product_qty']" position="after">
+                <field name="missed_item"/>
+            </xpath>
+            <xpath expr="//field[@name='date']" position="after">
+                <field name="approved_by" domain="[('user_id','!=',False)]" attrs="{'readonly':[('state','in',['lock','done'])],'invisible' : [('state','not in',['missed','lock','done'])],'required':[('state','=','missed')]}"/>
+            </xpath>
+            <xpath expr="//field[@name='date']" position="attributes">
+                <attribute name="attrs">{'readonly' : [('state','in',['lock','done'])]}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_stock_account_inherit_pdp" model="ir.ui.view">
+        <field name="name">stock.inventory.form.pdp</field>
+        <field name="model">stock.inventory</field>
+        <field name="inherit_id" ref="stock_account.view_inventory_form_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='accounting_date']" position="attributes">
+                <attribute name="attrs">{'readonly' : [('state','in',['lock','done'])]}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+    </data>
+</odoo>
