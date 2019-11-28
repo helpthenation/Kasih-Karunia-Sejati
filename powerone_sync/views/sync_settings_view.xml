@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sync_settings_tree" model="ir.ui.view">
+        <field name="name">Sync Settings Tree</field>
+        <field name="model">sync.settings</field>
+        <field name="arch" type="xml">
+            <tree string="Sync Settings Tree">
+                <field name="is_default"/>
+                <field name="name"/>
+                <field name="db_name"/>
+                <field name="host"/>
+                <field name="username"/>
+                <field name="password"/>
+                <field name="port"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="sync_settings_form" model="ir.ui.view">
+        <field name="name">Sync Settings Form</field>
+        <field name="model">sync.settings</field>
+        <field name="arch" type="xml">
+            <form string="Sync Settings Form">
+                <header>
+                    <button name="button_set_default" string="Set as Default" type="object" class="btn btn-primary" attrs="{'invisible': [('is_default','=',True)]}"/>
+                    <button name="button_test" string="Test Connection" type="object" class="fa fa-check"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="db_name"/>
+                        <field name="host"/>
+                        <field name="port"/>
+                        <field name="username"/>
+                        <field name="password"/>
+                        <field name="is_default" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="sync_settings_search" model="ir.ui.view">
+        <field name="name">Sync Settings Search</field>
+        <field name="model">sync.settings</field>
+        <field name="arch" type="xml">
+            <search string="Sync Settings Search">
+                <field name="name"/>
+                <field name="db_name"/>
+                <field name="username"/>
+                <field name="host"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_sync_settings" model="ir.actions.act_window">
+        <field name="name">Powerone Sync Settings</field>
+        <field name="res_model">sync.settings</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a Sync Settings
+            </p>
+        </field>
+    </record>
+
+    <menuitem action="action_sync_settings" id="menu_sync_settings" parent="base.menu_users"/>
+
+</odoo>
