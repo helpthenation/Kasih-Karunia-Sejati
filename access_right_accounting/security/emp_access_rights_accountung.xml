@@ -1,0 +1,89 @@
+<odoo>
+    <!--     <record model="ir.module.category" id="module_management_account">-->
+    <!--        <field name="name">Accounting  Access Rights</field>-->
+    <!--        <field name="description">Account access level for this module</field>-->
+    <!--        <field name="sequence">9</field>-->
+    <!--    </record>-->
+    <record id="group_purchase_of_account" model="res.groups">
+        <field name="name">Purchase</field>
+        <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+    </record>
+
+ <record id="group_sale_of_account" model="res.groups">
+        <field name="name">Sale</field>
+        <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+    </record>
+
+
+<!--    <record id="group_sale_of_account" model="res.groups">-->
+<!--        <field name="name">Sale</field>-->
+<!--        <field name="category_id" ref="base.module_category_accounting_and_finance"/>-->
+<!--    </record>-->
+
+
+    <record id="group_account_payable" model="res.groups">
+        <field name="name">Account Payable</field>
+        <field name="implied_ids" eval="[(4, ref('access_right_accounting.group_purchase_of_account'))]"/>
+        <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+    </record>
+
+    <record id="group_account_receivable" model="res.groups">
+        <field name="name">Account Receivable</field>
+        <field name="implied_ids" eval="[(4, ref('access_right_accounting.group_sale_of_account'))]"/>
+        <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+    </record>
+
+    <record id="group_budget_user_of_account" model="res.groups">
+        <field name="name">Budget User</field>
+        <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+    </record>
+
+    <record id="group_budget_management_of_account" model="res.groups">
+        <field name="name">Budget Management</field>
+        <!--        <field name="implied_ids" eval="[(4, ref('access_right_accounting.group_sale_of_account'))]"/>-->
+        <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+    </record>
+    <record id="group_report_view_of_account" model="res.groups">
+        <field name="name">Report Viewer</field>
+        <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+    </record>
+
+
+<!--    <record id="group_sale_of_account" model="res.groups">-->
+<!--        <field name="name">Sale</field>-->
+<!--        <field name="category_id" ref="base.module_category_accounting_and_finance"/>-->
+<!--    </record>-->
+
+
+    <record id="group_activity_scheduling" model="res.groups">
+        <field name="name">Activity Scheduling</field>
+        <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+    </record>
+    <record id="group_expense_advance_request" model="res.groups">
+        <field name="name">Expense Advance Request</field>
+        <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+    </record>
+
+
+    <record id="group_all_accounting" model="res.groups">
+        <field name="name">All Accounting</field>
+        <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+    </record>
+
+
+    <menuitem id="account.menu_finance_receivables" name="Sales" parent="account.menu_finance" sequence="2"
+              groups="access_right_accounting.group_account_receivable"/>
+    <menuitem id="account.menu_finance_payables" name="Purchase " parent="account.menu_finance" sequence="3"
+              groups="access_right_accounting.group_account_payable"/>
+
+    <menuitem id="budget_std.menu_finance_budget" name="Budget" parent="account.menu_finance" sequence="6"
+              groups="access_right_accounting.group_budget_user_of_account"/>
+    <menuitem id="account.menu_finance_reports" name="Reports" parent="account.menu_finance" sequence="5"
+              groups="access_right_accounting.group_report_view_of_account,account.group_account_invoice"/>
+
+    <menuitem name="Accounting" web_icon="account,static/description/icon.png" id="account.menu_finance" sequence="40"
+              groups="access_right_accounting.group_all_accounting"/>
+
+
+
+</odoo>
