@@ -61,7 +61,7 @@ class contract_deal(models.Model):
             args += (categ_products.ids,)
             products_to_filter |= categ_products
         
-        domain += ' AND in_date = %s'
+        domain += ' AND in_date < %s'
         args += (self.date,)
         
         self.env.cr.execute("""SELECT product_id, sum(qty) as product_qty, location_id, lot_id as prod_lot_id, package_id, owner_id as partner_id
