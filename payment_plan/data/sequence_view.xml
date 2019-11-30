@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="payment_sequence" model="ir.sequence">
+        <field name="name">Payment Sequence</field>
+        <field name="code">payment.plan</field>
+        <field name="prefix">BPP/%(range_year)s/%(month)s/</field>
+        <field name="padding">5</field>
+        <field eval="False" name="company_id"/>
+    </record>
+
+</odoo>

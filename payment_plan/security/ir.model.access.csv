@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_target_group,access_target_group,model_target_group,base.group_user,1,1,1,1
+access_target_lines,access_target_lines,model_target_lines,base.group_user,1,1,1,1
+access_sale_commission_report,access_sale_commission_report,model_sale_commission_report,base.group_user,1,1,1,1
+access_internal_transfer,access_internal_transfer,model_internal_transfer,base.group_user,1,1,1,1
+access_internal_transfer_line,access_internal_transfer_line,model_internal_transfer_line,base.group_user,1,1,1,1
+access_recurring_invoice_line,access_recurring_invoice_line,model_recurring_invoice_line,base.group_user,1,1,1,1
+access_recurring_invoice,access_recurring_invoice,model_recurring_invoice,base.group_user,1,1,1,1
+access_recurring_schedule,access_recurring_schedule,model_recurring_schedule,base.group_user,1,1,1,1
+access_import_wizard_line,access_import_wizard_line,model_import_wizard_line,base.group_user,1,1,1,1
+access_file_import_wizard,access_file_import_wizard,model_file_import_wizard,base.group_user,1,1,1,1
+access_payment_line,access_payment_line,model_payment_line,base.group_user,1,1,1,1
+access_payment_plan,access_payment_plan,model_payment_plan,base.group_user,1,1,1,1

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report 
+            string="Payment Plan" 
+            id="report_payment_plan" 
+            model="payment.plan" 
+            report_type="qweb-pdf"
+            name="payment_plan.report_generate_payment_plan" 
+            file="payment_plan.report_generate_payment_plan"
+        />
+    </data>
+</odoo>
