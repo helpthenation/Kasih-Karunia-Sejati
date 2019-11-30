@@ -1,0 +1,76 @@
+<odoo>
+  <data>
+
+      <act_window id="act_generate_payment_plan"
+      multi="True"
+      key2="client_action_multi" name="Generate Payment Plan"
+      res_model="payment.plan.wizard" src_model="account.invoice"
+      view_mode="form" target="new" view_type="form"/>
+
+      <record id="payment_view_form" model="ir.ui.view">
+        <field name="name">payment.view.form</field>
+        <field name="model">payment.plan</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false">
+                <h1>
+                    <field name="name" readonly="True"/>
+                </h1>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="payment_date"/>
+                            <field name="memo"/>
+                        </group>
+                        <group>
+                            <field name="owner"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="BILL">
+                            <field name="plan_line_ids">
+                                <tree editable="bottom">
+                                    <field name="partner_id"/>
+                                    <field name="date"/>
+                                    <field name="number"/>
+                                    <field name="reference"/>
+                                    <field name="due_date"/>
+                                    <field name="source_doc"/>
+                                    <field name="total"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                                <field name="amount_total"  class="oe_subtotal_footer_separator" />
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="payment_view_tree" model="ir.ui.view">
+        <field name="name">payment.view.tree</field>
+        <field name="model">payment.plan</field>
+        <field name="arch" type="xml">
+        	<tree create="false" edit="false">
+        		<field name="name"/>
+                <field name="owner"/>
+                <field name="payment_date"/>
+                <field name="memo"/>
+        	</tree>
+        </field>
+    </record>
+
+    <record id="action_payment_plan" model="ir.actions.act_window">
+        <field name="name">Payment Plan</field>
+        <field name="res_model">payment.plan</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_payment_plan" name="Payment Plan"
+            parent="account.menu_finance_payables"
+            action="payment_plan.action_payment_plan" sequence="100"/>
+
+  </data>
+</odoo>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="payment_plan_report">
+        <t t-call="report.external_layout">
+            <t t-set="o" t-value="o.with_context(lang=o.owner.lang)" />
+            <div class="page">
+                <div class="oe_structure"/>
+
+                <h3>Payment Plan</h3>
+                <p><h3 t-field="o.name"></h3></p>
+
+
+                <div id="informations" class="row mt32 mb32">
+                    <div class="col-xs-6">
+                        <strong>Payment Date : </strong>
+                        <span t-field="o.payment_date" class="m-0"/>
+                        <br></br>
+                        <strong>Memo : </strong>
+                        <span t-field="o.memo" class="m-0"/>
+                    </div>
+                   
+                    <div class="col-xs-6">
+                        <strong>Requested By : </strong>
+                        <span t-field="o.owner" class="m-0"/>
+                    </div>
+
+                </div>
+                
+                <table class="table table-sm o_main_table">
+                    <thead>
+                        <tr>
+                            <th><strong>Vendor</strong></th>
+                            <th><strong>Bill Date</strong></th>
+                            <th class="text-center"><strong>Number</strong></th>
+                            <th class="text-right"><strong>Vendor Reference</strong></th>
+                            <th class="text-right"><strong>Due Date</strong></th>
+                            <th class="text-right"><strong>Source Document</strong></th>
+                            <th class="text-right"><strong>Total</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="main_total" t-value="0"/>
+                        <tr t-foreach="o.plan_line_ids" t-as="line">
+                            <td>
+                                <span t-field="line.partner_id"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-field="line.date"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-field="line.number"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-field="line.reference"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-field="line.due_date"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-field="line.source_doc"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-field="line.total"/>
+                            </td>
+                            <t t-set="main_total" t-value="main_total + line.total"/>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="row" name="total">
+                    <div class="col-xs-4 pull-right">
+                        <table class="table table-condensed">
+                            <tr class="border-black">
+                                <td><strong>Total</strong>
+                                    <td class="text-right">
+                                        <t t-esc="'{:,}'.format(main_total)"></t>
+                                    </td>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </t>
+    </template>
+
+    <template id="report_generate_payment_plan">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="payment_plan.payment_plan_report" t-lang="o.owner.lang"/>
+        </t>
+    </template>
+
+</odoo>
