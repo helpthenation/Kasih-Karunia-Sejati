@@ -1,0 +1,91 @@
+<odoo>
+       <!--     activity based budgeting-->
+    <menuitem id="activity_based_budgetting.submenu_global_variable" parent="activity_based_budgetting.submenu_activity"
+              sequence="1" action="activity_based_budgetting.action_global_variable"
+              groups="access_right_accounting.group_budget_management_of_account"/>
+    <menuitem id="activity_based_budgetting.submenu_variable" parent="activity_based_budgetting.submenu_activity"
+              sequence="2" action="activity_based_budgetting.action_variable"
+              groups="access_right_accounting.group_budget_management_of_account"/>
+    <menuitem id="activity_based_budgetting.submenu_activity_type" parent="activity_based_budgetting.submenu_activity"
+              sequence="3" action="activity_based_budgetting.action_activity_type"
+              groups="access_right_accounting.group_budget_management_of_account"/>
+    <menuitem id="activity_based_budgetting.submenu_activity_template"
+              parent="activity_based_budgetting.submenu_activity" sequence="4"
+              action="activity_based_budgetting.action_activity_template"
+              groups="access_right_accounting.group_budget_management_of_account"/>
+    <menuitem id="activity_based_budgetting.submenu_activity_scheduling"
+              parent="activity_based_budgetting.submenu_activity" sequence="5"
+              action="activity_based_budgetting.action_activity_scheduling"
+              groups="access_right_accounting.group_activity_scheduling"/>
+
+    <!-- Advance expense accounting -->
+    <menuitem name="Expense Advance Requests" id="employee_expense_advance.menu_advance_expense_request"
+              action="employee_expense_advance.action_employee_advance_expense"
+              parent="employee_expense_advance.menu_advance_expense_employee" sequence="12"
+              groups="access_right_accounting.group_expense_advance_request"/>
+    <menuitem name="Advance to Approve" id="employee_expense_advance.menu_advance_expense_approved"
+              action="employee_expense_advance.action_employee_advance_expense_approve"
+              parent="employee_expense_advance.menu_advance_expense_employee" sequence="13"
+              groups="hr_expense.group_hr_expense_user,access_right_accounting.group_account_payable"/>
+    <menuitem name="Advance to Pay" id="employee_expense_advance.menu_advance_expense_paid"
+              action="employee_expense_advance.action_employee_advance_expense_paid"
+              parent="employee_expense_advance.menu_advance_expense_employee" sequence="14"
+              groups="account.group_account_user,access_right_accounting.group_account_payable"/>
+
+    <!--  Efaktur Management STD    -->
+
+    <menuitem id="vit_efaktur.menu_vit_efaktur_nomor"
+              parent="vit_efaktur.menu_vit_efaktur"
+              sequence="20"
+              name="Nomor Seri Faktur Pajak"
+              action="vit_efaktur.act_open_vit_efaktur_view" groups="access_right_accounting.group_account_receivable"/>
+
+    <menuitem id="vit_efaktur.menu_vit_efaktur_wizard"
+              parent="vit_efaktur.menu_vit_efaktur"
+              sequence="30"
+              name="Generate Nomor Seri Faktur Pajak"
+              action="vit_efaktur.act_open_vit_efaktur_wizard" groups="access_right_accounting.group_account_receivable"/>
+
+    <menuitem id="vit_efaktur.menu_vit_efaktur_export_product"
+              parent="vit_efaktur.menu_vit_efaktur"
+              sequence="40"
+              name="Export Products"
+              action="vit_efaktur.act_open_vit_efaktur_product_wizard" groups="access_right_accounting.group_account_receivable"/>
+
+    <menuitem id="vit_efaktur.menu_vit_efaktur_export_partner"
+              parent="vit_efaktur.menu_vit_efaktur"
+              sequence="50"
+              name="Export Partner"
+              action="vit_efaktur.act_open_vit_efaktur_partner_wizard" groups="access_right_accounting.group_account_receivable"/>
+
+    <menuitem id="vit_efaktur.menu_vit_efaktur_export_pk"
+              parent="vit_efaktur.menu_vit_efaktur_keluaran"
+              sequence="60"
+              name="Export FP. Keluaran"
+              action="vit_efaktur.act_open_vit_efaktur_pk_wizard"  groups="access_right_accounting.group_all_accounting" />
+
+    <menuitem id="vit_efaktur.menu_vit_efaktur_auto"
+              parent="vit_efaktur.menu_vit_efaktur_keluaran"
+              sequence="70"
+              name="Auto Numbering"
+              action="vit_efaktur.act_open_vit_efaktur_auto_wizard" groups="access_right_accounting.group_account_receivable"/>
+
+    <menuitem id="vit_efaktur.menu_vit_efaktur_export_pm"
+              parent="vit_efaktur.menu_vit_efaktur_masukan"
+              sequence="60"
+              name="Export FP. Masukan"
+              action="vit_efaktur.act_open_vit_efaktur_pm_wizard" groups="access_right_accounting.group_all_accounting" />
+
+<!-- Account Follow up   -->
+
+    <menuitem action="account_followup.action_account_followup_print"
+                  id="account_followup.account_followup_print_menu"
+                  parent="account_followup.menu_finance_followup"
+                  name="Send Letters and Emails"
+                  groups="account.group_account_user,access_right_accounting.group_account_receivable"
+                  sequence="2"/>
+
+    <menuitem id="account_followup.account_followup_s" action="account_followup.action_customer_followup"
+            parent="account_followup.menu_finance_followup" name="Do Manual Follow-Ups" sequence="3" groups="access_right_accounting.group_account_receivable"/>
+
+</odoo>

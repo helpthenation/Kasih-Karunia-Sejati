@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+
+access_crossovered_budget_manager,crossovered.budget,account_budget.model_crossovered_budget,access_right_accounting.group_budget_management_of_account,1,1,1,1
+access_crossovered_budget,crossovered.budget,account_budget.model_crossovered_budget,access_right_accounting.group_budget_user_of_account,1,1,1,0
+access_right_budget_manger,approved_manger,budget_std.model_budget_std,access_right_accounting.group_budget_management_of_account,1,1,1,1
+access_right_budget,approved,budget_std.model_budget_std,access_right_accounting.group_budget_user_of_account,1,1,1,0
