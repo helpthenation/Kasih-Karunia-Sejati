@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--SKU Form-->  
+    <record id="view_sku_form" model="ir.ui.view">
+    <field name="name">sku.sku.form</field>
+    <field name="model">sku.sku</field>
+        <field name="arch" type="xml">
+            <form string="Customer SKU">
+                <group>
+                    <group>
+                        <field name="name"/>
+                        <field name="customer" />
+                        <field name="price" />
+                    </group>
+                </group>
+                <notebook>
+                        <page string="Product">
+                            <field name="sku_product_info_ids">
+                                <tree name="products" string="products" editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="int_ref"/>
+                                </tree>
+                            </field>                            
+                        </page>
+                </notebook>
+            </form>
+        </field>
+    </record>
+    
+    <!--SKU Tree-->
+     <record id="view_sku_tree" model="ir.ui.view">
+            <field name="name">sku.sku.tree</field>
+            <field name="model">sku.sku</field>
+            <field name="arch" type="xml">
+                <tree string="Customer SKU">
+                    <field name="name"/>
+                    <field name="customer" />
+                    <field name="price" />
+                </tree>
+            </field>
+        </record>
+        
+    <!--SKU Action-->
+     <record id="action_sku" model="ir.actions.act_window">
+        <field name="name">Customer SKU</field>
+        <field name="res_model">sku.sku</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+        
+    <!--SKU Product line form-->
+    <record id="view_sku_product_form" model="ir.ui.view">
+    <field name="name">sku.product.info.form</field>
+    <field name="model">sku.product.info</field>
+        <field name="arch" type="xml">
+            <form string="Products">
+                <group>
+                    <group>
+                        <field name="int_ref"/>
+                        <field name="product_id" />
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+    
+    <!--Sales/Configuration/SKU-->
+    <menuitem
+        id="root_sku_sale"
+        name="Customer SKU"
+        parent="sales_team.menu_sale_config"
+        action="action_sku"
+        sequence="100"
+    />
+    <!--Inventory/Configuration/SKU-->
+    <menuitem
+        id="root_sku_stock"
+        name="Customer SKU"
+        parent="stock.menu_stock_config_settings"
+        action="action_sku"
+        sequence="100"
+    />
+    
+    
+    <!--SKU Partner Inherited form-->
+    <record id="res_partner_sku" model="ir.ui.view">
+        <field name="name">res.partner.inh.sku</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="account.view_partner_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='accounting_disabled']" position="after">
+                <page name="sku" string="Customer SKU">
+                    <field name="partner_sku_ids"  readonly="1">
+                        <tree name="sku">
+                            <field name="sku_id"/>
+                            <field name="price"/>
+                            <field name="product_id" widget="many2many_tags"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    
+    <!--SKU Product line form-->
+    <record id="view_sku_customer_form" model="ir.ui.view">
+    <field name="name">res.partner.sku.form</field>
+    <field name="model">res.partner.sku</field>
+        <field name="arch" type="xml">
+            <form string="Products">
+                <group>
+                    <group>
+                        <field name="sku_id"/>
+                        <field name="product_id"/>
+                        <field name="price"/>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+    
+
+    
+    <!--SKU Sale Order Inherit form-->
+    <record id="sale_order_inh_sku" model="ir.ui.view">
+        <field name="name">sale.order.inh.sku</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="after">
+                <field name="sku_id"/>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+                <attribute name="context">{'partner_id': parent.partner_id}</attribute>
+            </xpath>
+        </field>
+    </record>
+    
+    <record id="product_template_sku" model="ir.ui.view">
+            <field name="name">product.template.sku</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page name="cusomer_sku" string="Customer SKU">
+                        <field name="product_sku_ids"  readonly="1">
+                            <tree name="sku">
+                                <field name="sku_id"/>
+                                <field name="price"/>
+                                <field name="partner_id"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+    </record>
+    <record id="product_product_sku" model="ir.ui.view">
+            <field name="name">product.product.sku</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page name="cusomer_sku" string="Customer SKU">
+                        <field name="product_sku_ids"  readonly="1">
+                            <tree name="sku">
+                                <field name="sku_id"/>
+                                <field name="price"/>
+                                <field name="partner_id"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+</odoo>
+

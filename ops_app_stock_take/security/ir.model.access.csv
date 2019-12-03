@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_stock_count,stock_count,model_stock_count,,1,1,1,0
+access_stock_count_line,stock_count_line,model_stock_count_line,,1,1,1,0
+access_stock_count_quant,stock_count_quant,model_stock_count_quant,,1,1,1,0
+access_manager_stock_count,manager_stock_count,model_stock_count,stock.group_stock_manager,1,1,1,1
+access_manager_stock_count_line,manager_stock_count_line,model_stock_count_line,stock.group_stock_manager,1,1,1,1
+access_manager_stock_count_quant,manager_stock_count_quant,model_stock_count_quant,stock.group_stock_manager,1,1,1,1
