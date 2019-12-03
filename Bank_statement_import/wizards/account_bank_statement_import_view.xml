@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="bank_statement_import_view_inherit" model="ir.ui.view">
+        <field name="name">Import Bank Statements</field>
+        <field name="model">account.bank.statement.import</field>
+        <field name="priority">1</field>
+        <field name="inherit_id" ref="account_bank_statement_import.account_bank_statement_import_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='import_file']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//h2" position="replace">
+                <h2>
+                    Select a bank statement file to import <h5><field name="attachment_id" readonly="1"/></h5>
+                </h2>
+            </xpath>
+            <xpath expr="//button[@name='import_file']" position="after">
+                <button name="import_bank_statement_file" string="_Import" type="object" class="btn-primary" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
