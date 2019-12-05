@@ -89,7 +89,7 @@ class PartnerSku(models.Model):
     _name = 'res.partner.sku'
 
     partner_id = fields.Many2one('res.partner', string="Partner Ref")
-    sku_id = fields.Many2one('sku.sku', string="No.SKU", required=True)
+    sku_id = fields.Many2one('sku.sku', string="Customer SKU", required=True)
     product_id = fields.Many2many('product.product', string="Product", required=True)
     price = fields.Float(string="Price", required=True)
 
@@ -116,8 +116,8 @@ class SaleOrder(models.Model):
                     'product_uom_qty':  1.0
                     })
             self.order_line = [(0, 0, d) for d in data_list]
-        # else:
-            # self.order_line = []
+        else:
+            self.order_line = []
         return res
 
 
@@ -138,45 +138,11 @@ class SaleOrderLine(models.Model):
             self.sku_id = sku_id.id
         return res
 
-    # @api.model
-    # def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
-    #     categ_id = self.env.context.get('id', False)
-    #     print "ffffffff", self, categ_id
-    #     child_id = self.env['sale.order'].browse(categ_id)
-    #     print "qqqqqqqqqqqq", child_id
-    #     customer_id = self.order_id.partner_id
-    #     print ('aaaaaaaaa', customer_id)
-    #     if customer_id:
-    #         # sku_id = self.env['sku.sku'].serach([('customer', '=', customer_id.id)])
-    #         # if sku_id:
-    #         self._cr.execute("""
-    #             SELECT
-    #                 product_id
-    #             FROM
-    #                 sku_product_info
-    #             WHERE
-    #                 sku_id in ( SELECT id FROM sku_sku where customer = (%s)
-    #                             )
-    #         """ % (customer_id.id))
-    #         res = self._cr.dictfetchall()
-    #         print ("ssssssssssss", res)
-    #         product_id = []
-    #         if res:
-    #             product_id = [i['product_id'] for i in res]
-    #         args += [('id', 'in', product_id)]
-    #     return super(SaleOrderLine, self)._search(args=args, offset=offset,
-    #                                               limit=limit, order=order,
-    #                                               count=count, access_rights_uid=access_rights_uid)
-
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     product_sku_ids = fields.One2many('product.product.sku', 'product_id', string="SKU Info")
-
-#     partner_id = fields.Many2one('res.partner', string="Customer", required=1)
-#     sku_id = fields.Many2one('sku.sku', string="Customer SKU", required=1)
-#     price = fields.Float(string="Price")
 
 
 class ProductProductSKU(models.Model):
