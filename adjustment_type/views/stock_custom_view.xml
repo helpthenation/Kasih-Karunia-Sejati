@@ -31,8 +31,12 @@
             <field name="arch" type="xml">
                 <form>
                     <sheet>
-                       <strong><span>Category Name</span></strong>
-                            <field name="name" required="1"/>
+                       <strong><span style="font-size:30px">Category Name</span></strong>
+                        <group>
+                            <h1>
+                                <field name="name" required="1"/>
+                            </h1>
+                        </group>
                         <group string="Details">
                             <field name="code"/>
                             <field name="description"/>
