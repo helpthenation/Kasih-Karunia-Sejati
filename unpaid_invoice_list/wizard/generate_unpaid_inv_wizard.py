@@ -13,7 +13,6 @@ class UnpaidInvoiceWizard(models.TransientModel):
     payment_date = fields.Date('Payment Date')
     memo = fields.Char('Memo')
     amount_total = fields.Float(string="Total",compute="get_total")
-
     unpaid_inv_wiz_line_ids = fields.One2many('unpaid.invoice.wiz.line', 'unpaid_inv_id', string="Plan")
 
     @api.depends('unpaid_inv_wiz_line_ids.total')
@@ -46,6 +45,7 @@ class UnpaidInvoiceWizard(models.TransientModel):
                 dict = (0,0, {
                     'partner_id': bill.partner_id.id,
                     'date': bill.date_invoice,
+                    'aged': bill.aged,
                     'number': bill.number,
                     'user_id': bill.user_id.id,
                     'area_id': area_id,
@@ -73,6 +73,7 @@ class UnpaidInvoiceWizard(models.TransientModel):
                 order_list.append((0,0,{
                     'partner_id':line.partner_id.id,
                     'date':line.date,
+                    'aged': line.aged,
                     'number':line.number,
                     'user_id':line.user_id.id,
                     'area_id':area_id,
@@ -122,3 +123,4 @@ class UnpaidInvoiceWizLine(models.TransientModel):
     due_date = fields.Date('Due Date')
     source_doc = fields.Char('Source Document')
     total = fields.Float('Total')
+    aged = fields.Char('Aged')

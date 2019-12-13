@@ -24,6 +24,7 @@
                             <tree>
                                 <field name="partner_id"/>
                                 <field name="date"/>
+                                <field name="aged"/>
                                 <field name="number"/>
                                 <field name="user_id"/>
                                 <field name="area_id"/>
