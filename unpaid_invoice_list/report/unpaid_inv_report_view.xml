@@ -32,6 +32,7 @@
                         <tr>
                             <th><strong>Customer</strong></th>
                             <th><strong>Invoice Date</strong></th>
+                            <th class="text-center"><strong>Aged</strong></th>
                             <th class="text-center"><strong>Number</strong></th>
                             <th class="text-right"><strong>Sales Person</strong></th>
                             <th class="text-right"><strong>Area</strong></th>
@@ -49,6 +50,9 @@
                             </td>
                             <td class="text-center">
                                 <span t-field="line.date"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-field="line.aged"/>
                             </td>
                             <td class="text-center">
                                 <span t-field="line.number"/>

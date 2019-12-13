@@ -59,3 +59,4 @@ class UnpaidInvoiceLine(models.Model):
     due_date = fields.Date('Due Date')
     source_doc = fields.Char('Source Document')
     total = fields.Float('Total')
+    aged = fields.Char('Aged')
