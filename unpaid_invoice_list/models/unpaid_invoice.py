@@ -13,13 +13,11 @@ class UnpaidInvoice(models.Model):
         vals['name'] = self.env['ir.sequence'].next_by_code('unpaid.invoice') or '/'
         return super(UnpaidInvoice, self).create(vals)
 
-    owner = fields.Many2one('res.users', string='Requested By')
-    payment_date = fields.Date('Payment Date')
+    owner = fields.Many2one('res.users', string='Created By')
+    payment_date = fields.Date('Collection Date')
     memo = fields.Char('Memo')
-
     unpaid_inv_line_ids = fields.One2many('unpaid.invoice.line', 'unpaid_invoice_id', string="Plan")
     amount_total = fields.Float(string="Total",compute="get_total")
-
 
     @api.depends('unpaid_inv_line_ids.total')
     def get_total(self):
@@ -59,4 +57,5 @@ class UnpaidInvoiceLine(models.Model):
     due_date = fields.Date('Due Date')
     source_doc = fields.Char('Source Document')
     total = fields.Float('Total')
-    aged = fields.Char('Aged')
+    aged = fields.Integer('Aged')
+    reference_id = fields.Char(string="Reference/Description")
