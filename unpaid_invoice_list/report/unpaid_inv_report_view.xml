@@ -13,7 +13,7 @@
 
                 <div id="informations" class="row mt32 mb32">
                     <div class="col-xs-6">
-                        <strong>Payment Date : </strong>
+                        <strong>Collection Date : </strong>
                         <span t-field="o.payment_date" class="m-0"/>
                         <br></br>
                         <strong>Memo : </strong>
@@ -21,7 +21,7 @@
                     </div>
                    
                     <div class="col-xs-6">
-                        <strong>Requested By : </strong>
+                        <strong>Created By : </strong>
                         <span t-field="o.owner" class="m-0"/>
                     </div>
 
@@ -39,6 +39,7 @@
                             <th class="text-right"><strong>Region</strong></th>
                             <th class="text-right"><strong>Due Date</strong></th>
                             <th class="text-right"><strong>Source Document</strong></th>
+                            <th class="text-right"><strong>Reference/Description</strong></th>
                             <th class="text-right"><strong>Total</strong></th>
                         </tr>
                     </thead>
@@ -71,6 +72,9 @@
                             </td>
                             <td class="text-right">
                                 <span t-field="line.source_doc"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-field="line.reference_id"/>
                             </td>
                             <td class="text-right">
                                 <span t-field="line.total"/>

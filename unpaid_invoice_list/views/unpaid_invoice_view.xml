@@ -20,7 +20,7 @@
                 <sheet>
                     <group>
                         <group>
-                            <field name="payment_date"/>
+                            <field name="payment_date" required="1"/>
                             <field name="memo"/>
                         </group>
                         <group>
@@ -40,6 +40,7 @@
                                     <field name="area_id"/>
                                     <field name="region_id"/>
                                     <field name="source_doc"/>
+                                    <field name="reference_id"/>
                                     <field name="total"/>
                                 </tree>
                             </field>
