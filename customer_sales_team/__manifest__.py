@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Account Invoice Aged",
+    'name': "Customer Sales Team",
 
     'summary': """
-        Account Invoice details""",
+        Customer Sales Details""",
 
     'description': """
     """,
@@ -15,10 +15,10 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['account'],
+    'depends': ['account', 'sales_team'],
 
     # always loaded
     'data': [
-        'views/account_invoice_view.xml',
+        'views/customer_partner_view.xml',
     ],
 }
