@@ -35,12 +35,12 @@
                                     <field name="date"/>
                                     <field name="due_date"/>
                                     <field name="aged"/>
+                                    <field name="reference_id"/>
                                     <field name="number"/>
                                     <field name="user_id"/>
                                     <field name="area_id"/>
                                     <field name="region_id"/>
                                     <field name="source_doc"/>
-                                    <field name="reference_id"/>
                                     <field name="total"/>
                                 </tree>
                             </field>
