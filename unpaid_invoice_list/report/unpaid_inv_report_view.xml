@@ -32,14 +32,14 @@
                         <tr>
                             <th><strong>Customer</strong></th>
                             <th><strong>Invoice Date</strong></th>
+                            <th class="text-right"><strong>Due Date</strong></th>
                             <th class="text-center"><strong>Aged</strong></th>
+                            <th class="text-right"><strong>Reference/Description</strong></th>
                             <th class="text-center"><strong>Number</strong></th>
                             <th class="text-right"><strong>Sales Person</strong></th>
                             <th class="text-right"><strong>Area</strong></th>
                             <th class="text-right"><strong>Region</strong></th>
-                            <th class="text-right"><strong>Due Date</strong></th>
                             <th class="text-right"><strong>Source Document</strong></th>
-                            <th class="text-right"><strong>Reference/Description</strong></th>
                             <th class="text-right"><strong>Total</strong></th>
                         </tr>
                     </thead>
