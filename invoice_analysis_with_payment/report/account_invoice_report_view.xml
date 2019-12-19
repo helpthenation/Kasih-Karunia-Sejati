@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="view_account_invoice_report_pivot_amount_paid">
+            <field name="name">account.invoice.report.report.pivot.amount.paid</field>
+            <field name="model">account.invoice.report</field>
+            <field name="inherit_id" ref="account.view_account_invoice_report_pivot"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='price_total']" position="before">
+                    <field name="number" type="row"/>
+                    <field name="name" type="row"/>
+                    <field name="amount_paid" type="measure"/>
+                    <field name="residual" type="measure"/>
+                </xpath>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

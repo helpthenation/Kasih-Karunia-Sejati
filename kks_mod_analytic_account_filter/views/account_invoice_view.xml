@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="invoice_tree_analytic_filter">
+            <field name="name">account.invoice.tree.analytic.filter</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" position="before">
+                    <field name="analytic_account_name" groups="analytic.group_analytic_accounting"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="view_account_invoice_analytic_filter">
+            <field name="name">account.invoice.select.analytic.filter</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='number']" position="after">
+                    <field name="analytic_account_name"/>
+                </xpath>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

@@ -89,15 +89,42 @@ class PartnerSku(models.Model):
     _name = 'res.partner.sku'
 
     partner_id = fields.Many2one('res.partner', string="Partner Ref")
-    sku_id = fields.Many2one('sku.sku', string="No.SKU", required=True)
+    sku_id = fields.Many2one('sku.sku', string="Customer SKU", required=True)
     product_id = fields.Many2many('product.product', string="Product", required=True)
     price = fields.Float(string="Price", required=True)
+
+
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
+
+    @api.multi
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        res = super(SaleOrder, self).onchange_partner_id()
+        if len(self.partner_id.partner_sku_ids) > 0:
+            product_list = [pro for pro in self.partner_id.partner_sku_ids.product_id]
+            data_list = []
+            for pro_sku in product_list:
+                name = pro_sku.name_get()[0][1]
+                if pro_sku.description_sale:
+                    name += '\n' + pro_sku.description_sale
+                data_list.append({
+                    'product_id': pro_sku.id,
+                    'sku_id': self.partner_id.partner_sku_ids.sku_id.id,
+                    'name': name,
+                    'product_uom': pro_sku.uom_id,
+                    'product_uom_qty':  1.0
+                    })
+            self.order_line = [(0, 0, d) for d in data_list]
+        else:
+            self.order_line = []
+        return res
 
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    sku_id = fields.Many2one('sku.sku', string="No.SKU")
+    sku_id = fields.Many2one('sku.sku', string="Customer SKU")
 
     @api.multi
     @api.onchange('product_id')
@@ -112,37 +139,10 @@ class SaleOrderLine(models.Model):
         return res
 
 
-# class ProductProduct(models.Model):
-#     _inherit = 'product.product'
-
-#     @api.model
-#     def name_search(self, name, args=None, operator='ilike', limit=100):
-#         args = args or []
-#         domain = []
-#         if name:
-#             domain = ['|', ('code', '=ilike', name + '%'), ('name', operator, name)]
-#             if operator in expression.NEGATIVE_TERM_OPERATORS:
-#                 domain = ['&', '!'] + domain[1:]
-#         products = self.search(domain + args, limit=limit)
-#         if self._context.get('partner_id'):
-#             partner_id = self._context.get('partner_id')
-#             sku_obj = self.env['sku.sku'].search([('customer', '=', partner_id)])
-#             products_res = sku_obj.sku_product_info_ids.mapped('product_id')
-#             if any(products_res):
-#                 products = products_res
-#             else:
-#                 return products_res.name_get()
-#         return products.name_get()
-
-
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     product_sku_ids = fields.One2many('product.product.sku', 'product_id', string="SKU Info")
-
-#     partner_id = fields.Many2one('res.partner', string="Customer", required=1)
-#     sku_id = fields.Many2one('sku.sku', string="Customer SKU", required=1)
-#     price = fields.Float(string="Price")
 
 
 class ProductProductSKU(models.Model):

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <!-- xml excel -->
+        <record id="view_excel_form_extended" model="ir.ui.view">
+            <field name="name">excel.extended.form</field>
+            <field name="model">excel.extended</field>
+            <field name="arch" type="xml">
+                <form string="Excel Report file">
+                    <group>
+                        <field name="excel_file" readonly="1" filename="file_name"/>
+                        <field name="file_name" invisible="1"/>
+                    </group>
+                    <footer>
+                        <button string="Close" class="oe_highlight" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_excel_form" model="ir.actions.act_window">
+            <field name="name">Reportes Excel</field>
+            <field name="view_id" ref="view_excel_form_extended"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="res_model">excel.extended</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+         <report
+            id="account_payment_report"
+            model="account.payment"
+            name="customer_deposit_printout.report_invoice_proforma_no_logo"
+            string="Customer Deposit"
+        />
+
+        <record id="account_payment_portrait_paperformat" model="report.paperformat">
+            <field name="name">Account Payment Paper Format</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">59</field>
+            <field name="margin_bottom">37</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">0</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">57</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="account_payment_report" model="ir.actions.report.xml">
+            <field name="name">Customer Deposit</field>
+            <field name="model">account.payment</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">customer_deposit_printout.report_account_payment_report</field>
+            <field name="paperformat_id" ref="customer_deposit_printout.account_payment_portrait_paperformat"/>
+        </record>
+
+    </data>
+</odoo>

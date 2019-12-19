@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="sequence_bkm" model="ir.sequence">
+            <field name="name">Bukti Bank Keluar sequence</field>
+            <field name="code">bukti.bank.keluar</field>
+            <field name="prefix">BBK/%(year)s/%(month)s/</field>
+            <field eval="1" name="number_next"/>
+            <field eval="1" name="number_increment"/>
+            <field eval="True" name="use_date_range"/>
+            <field eval="False" name="company_id"/>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="sequence_bkk" model="ir.sequence">
+            <field name="name">Bukti Bank Masuk sequence</field>
+            <field name="code">bukti.bank.masuk</field>
+            <field name="prefix">BBM/%(year)s/%(month)s/</field>
+            <field eval="1" name="number_next"/>
+            <field eval="1" name="number_increment"/>
+            <field eval="True" name="use_date_range"/>
+            <field eval="False" name="company_id"/>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="sequence_bbm" model="ir.sequence">
+            <field name="name">Bukti Kas Keluar sequence</field>
+            <field name="code">bukti.kas.keluar</field>
+            <field name="prefix">BKK/%(year)s/%(month)s/</field>
+            <field eval="1" name="number_next"/>
+            <field eval="1" name="number_increment"/>
+            <field eval="True" name="use_date_range"/>
+            <field eval="False" name="company_id"/>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="sequence_bbk" model="ir.sequence">
+            <field name="name">Bukti Kas Masuk sequence</field>
+            <field name="code">bukti.kas.masuk</field>
+            <field name="prefix">BKM/%(year)s/%(month)s/</field>
+            <field eval="1" name="number_next"/>
+            <field eval="1" name="number_increment"/>
+            <field eval="True" name="use_date_range"/>
+            <field eval="False" name="company_id"/>
+            <field name="padding">4</field>
+        </record>
+    </data>
+</odoo>

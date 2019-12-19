@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="view_bukti_bank_kelaur_wiz_form" model="ir.ui.view">
+		<field name="name">bukti.bank.keluar.wiz.form</field>
+		<field name="model">bukti.bank.keluar.wiz</field>
+		<field name="arch" type="xml">
+			<form string="Bukti Bank Kelaur">
+				<sheet>
+					<group>
+						<group>
+							<field name="journal_id"
+								options="{'no_open': True, 'no_create': True}" readonly="1"/>
+							<field name="date" readonly="1"/>
+							<field name="period_id" readonly="1"/>
+						</group>
+						<group>
+							<field name="ref" />
+						</group>
+					</group>
+					<notebook>
+						<page string="Bank and Cash Receipt">
+							<field name="line_ids" widget="one2many_list" readonly="1"
+								context="{'line_ids': line_ids, 'journal_id': journal_id }">
+								<tree editable="bottom" string="Journal Items">
+									<field name="account_id"/>
+									<field name="name" />
+									<field name="credit" sum="Total Credit" />
+									<field name="partner_id" invisible="1"/>
+								</tree>
+							</field>
+						</page>
+					</notebook>
+				</sheet>
+				<footer>
+                    <button name="create_data" string="Create"  type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel" />
+                </footer>
+			</form>
+		</field>
+	</record>
+	
+	<act_window
+            id="act_account_move_to_account_move_line_open_bbk"
+            key2="client_action_multi"
+            name="Bukti Bank Keluar"
+            res_model="bukti.bank.keluar.wiz"
+            src_model="account.move"
+            view_mode="form" target="new" view_type="form"/>
+</odoo>

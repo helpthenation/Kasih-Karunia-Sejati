@@ -1,0 +1,24 @@
+<odoo>
+    <!-- change password wizard -->
+    <record id="partner_export_wizard_view" model="ir.ui.view">
+        <field name="name">Export BOM</field>
+        <field name="model">bom.export.wizard</field>
+        <field name="arch" type="xml">
+            <form string="BOM Export">
+                <footer>
+                    <button class="btn-primary" name="print_report_customer_info_xls"
+                        string="Customer Info xls" type="object"
+                    />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window id="export_bom_wizard_action"
+        name="Export BOM"
+        src_model="mrp.bom"
+        res_model="bom.export.wizard"
+        view_type="form" view_mode="form"
+        key2="client_action_multi" target="new"
+        />
+</odoo>
