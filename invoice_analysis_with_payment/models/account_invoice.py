@@ -19,23 +19,23 @@ class AccountInvoice(models.Model):
             today_date = fields.Date.context_today(self)
             if invoice.state == 'paid':
                 invoice.update({'due_status_copy': 'Paid'})
-                invoice.due_status = 'paid'
-            else:
-                if invoice.date_due and invoice.state == 'open':
+                self._cr.execute("UPDATE account_invoice set due_status=%s where id=%s", ('paid',invoice.id,))
+            if invoice.state == 'draft':
+                invoice.update({'due_status_copy': 'Not Due'})
+                self._cr.execute("UPDATE account_invoice set due_status=%s where id=%s", ('not_due',invoice.id,))
+            if invoice.state == 'open':
+                if invoice.date_due:
                     if today_date >= invoice.date_due: 
                         invoice.update({'due_status_copy': 'Due'})
-                        invoice.due_status = 'due'
+                        self._cr.execute("UPDATE account_invoice set due_status=%s where id=%s", ('due',invoice.id,))
                     else:
                         invoice.update({'due_status_copy': 'Not Due'})
-                        invoice.due_status = 'not_due'
-                else:
-                    invoice.update({'due_status_copy': 'Not Due'})
-                    invoice.due_status = 'not_due'           
+                        self._cr.execute("UPDATE account_invoice set due_status=%s where id=%s", ('not_due',invoice.id,))
                 
     
     amount_paid = fields.Float('Amount Paid', readonly=True, compute='_get_amount_paid', store=True)
-    due_status = fields.Selection([('due','Due'),('not_due','Not Due'),('paid','Paid')], string='Due Status', readonly=True)
-    due_status_copy = fields.Char(string='Due Status COPY', readonly=True,compute='_get_due_status')
+    due_status = fields.Selection([('due','Due'),('not_due','Not Due'),('paid','Paid')], string='Due Status')
+    due_status_copy = fields.Char(string='Due Status COPY', readonly=True, compute='_get_due_status')
     
 
 
