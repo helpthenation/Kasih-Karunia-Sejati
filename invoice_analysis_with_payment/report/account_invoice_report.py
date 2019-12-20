@@ -12,13 +12,14 @@ class AccountInvoiceReport(models.Model):
     residual = fields.Float(string='Amount Due', readonly=True)
     number = fields.Char(string='Number', readonly=True)
     name = fields.Char(string='Reference', readonly=True)
+    due_status = fields.Selection([('due','Due'),('not_due','Not Due'),('paid','Paid')], string='Due Status', readonly=True)
     
     _depends = {
         'account.invoice': [
             'account_id', 'amount_total_company_signed', 'commercial_partner_id', 'company_id',
             'currency_id', 'date_due', 'date_invoice', 'fiscal_position_id',
             'journal_id', 'partner_bank_id', 'partner_id', 'payment_term_id',
-            'residual','amount_paid','number','name', 'state', 'type', 'user_id',
+            'residual','amount_paid','due_status','number','name', 'state', 'type', 'user_id',
         ],
         'account.invoice.line': [
             'account_id', 'invoice_id', 'price_subtotal', 'product_id',
@@ -37,7 +38,7 @@ class AccountInvoiceReport(models.Model):
                 sub.payment_term_id, sub.uom_name, sub.currency_id, sub.journal_id,
                 sub.fiscal_position_id, sub.user_id, sub.company_id, sub.nbr, sub.type, sub.state,
                 sub.weight, sub.volume,
-                sub.categ_id, sub.date_due, sub.amount_paid, sub.account_id, sub.account_line_id, sub.partner_bank_id,
+                sub.categ_id, sub.date_due, sub.amount_paid, sub.due_status, sub.account_id, sub.account_line_id, sub.partner_bank_id,
                 sub.product_qty, sub.number,sub.name, sub.price_total as price_total, sub.price_average as price_average,
                 COALESCE(cr.rate, 1) as currency_rate, sub.residual as residual, sub.commercial_partner_id as commercial_partner_id
         """
@@ -52,7 +53,7 @@ class AccountInvoiceReport(models.Model):
                     ai.currency_id, ai.journal_id, ai.fiscal_position_id, ai.user_id, ai.company_id,
                     1 AS nbr,
                     ai.type, ai.state, pt.categ_id, ai.date_due, ai.account_id, ail.account_id AS account_line_id,
-                    ai.partner_bank_id, ai.amount_paid, ai.number, ai.name,
+                    ai.partner_bank_id, ai.amount_paid, ai.number, ai.name, ai.due_status,
                     SUM ((invoice_type.sign * ail.quantity) / u.factor * u2.factor) AS product_qty,
                     SUM(ail.price_subtotal_signed) AS price_total,
                     SUM(ABS(ail.price_subtotal_signed)) / CASE
@@ -96,7 +97,7 @@ class AccountInvoiceReport(models.Model):
                     ai.partner_id, ai.payment_term_id, u2.name, u2.id, ai.currency_id, ai.journal_id,
                     ai.fiscal_position_id, ai.user_id, ai.company_id, ai.type, invoice_type.sign, ai.state, pt.categ_id,
                     ai.date_due, ai.account_id, ail.account_id, ai.partner_bank_id, ai.residual_company_signed,
-                    ai.amount_total_company_signed, ai.commercial_partner_id, ai.amount_paid, ai.number, ai.name, partner.country_id
+                    ai.amount_total_company_signed, ai.commercial_partner_id, ai.amount_paid, ai.due_status, ai.number, ai.name, partner.country_id
         """
         return group_by_str
     

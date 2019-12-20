@@ -21,6 +21,10 @@
                 <xpath expr="//field[@name='residual_signed']" position="before">
                     <field name="amount_paid"/>
                 </xpath>
+                <xpath expr="//field[@name='date_due']" position="after">
+                    <field name="due_status"/>
+                    <field name="due_status_copy" invisible="1"/>
+                </xpath>
             </field>
         </record>
         
