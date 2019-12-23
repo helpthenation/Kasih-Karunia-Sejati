@@ -4,20 +4,19 @@
 {
     "name": "Product SKU",
     'summary': """
-    		Product SKU : Sales > configuration > SKU \n
-    		Product SKU : Inventory > configuration > SKU \n
-    		Product SKU : Sales > Customer > SKU \n
-    		
+            Product SKU : Sales > configuration > SKU \n
+            Product SKU : Inventory > configuration > SKU \n
+            Product SKU : Sales > Customer > SKU \n
         """,
     'description': """
         Product SKU
     """,
     "version": "1.0",
     "category": "SKU",
-    "author": "Hashmicro / Kunal Chavda",
+    "author": "Hashmicro / Shivam",
     "website": "http://www.hashmicro.com",
     "depends": [
-        'sales_team','stock','account',
+        'sales_team', 'stock', 'account',
     ],
     "data": [
         'views/sku_view.xml',

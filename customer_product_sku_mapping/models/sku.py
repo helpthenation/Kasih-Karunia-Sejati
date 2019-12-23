@@ -12,8 +12,6 @@ class sku(models.Model):
     customer = fields.Many2one('res.partner', string="Customer", domain=[('customer', '=', True)], required=True)
     sku_product_info_ids = fields.One2many('sku.product.info', 'sku_id', string="Products")
 
-    _sql_constraints = [('customer_uniq', 'unique (customer)', "Customer must be unique")]
-
     def create_res_partner_sku(self):
         data = {}
         partner_obj = self.env['res.partner.sku']
@@ -94,33 +92,6 @@ class PartnerSku(models.Model):
     price = fields.Float(string="Price", required=True)
 
 
-class SaleOrder(models.Model):
-    _inherit = 'sale.order'
-
-    @api.multi
-    @api.onchange('partner_id')
-    def onchange_partner_id(self):
-        res = super(SaleOrder, self).onchange_partner_id()
-        if len(self.partner_id.partner_sku_ids) > 0:
-            product_list = [pro for pro in self.partner_id.partner_sku_ids.product_id]
-            data_list = []
-            for pro_sku in product_list:
-                name = pro_sku.name_get()[0][1]
-                if pro_sku.description_sale:
-                    name += '\n' + pro_sku.description_sale
-                data_list.append({
-                    'product_id': pro_sku.id,
-                    'sku_id': self.partner_id.partner_sku_ids.sku_id.id,
-                    'name': name,
-                    'product_uom': pro_sku.uom_id,
-                    'product_uom_qty':  1.0
-                    })
-            self.order_line = [(0, 0, d) for d in data_list]
-        else:
-            self.order_line = []
-        return res
-
-
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
@@ -129,14 +100,49 @@ class SaleOrderLine(models.Model):
     @api.multi
     @api.onchange('product_id')
     def product_id_change(self):
-        res = super(SaleOrderLine, self).product_id_change()
+        super(SaleOrderLine, self).product_id_change()
         if not self.order_id.partner_id:
             raise UserError("Please select the customer First.")
+        domain = {}
+        if self.product_id:
+            data = self.env['res.partner.sku'].search([('product_id', '=', self.product_id.id), ('partner_id', '=', self.order_id.partner_id.id)])
+            sku_list = [d.sku_id.id for d in data]
+            if not sku_list:
+                domain.update({'domain': {'sku_id': [('id', 'in', [])]}})
+            domain.update({'domain': {'sku_id': [('id', 'in', sku_list)]}})
+        else:
+            domain.update({'domain': {'sku_id': [('id', 'in', [])]}})
+        return domain
+
+
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
+
+    @api.model
+    def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
         partner_id = self._context.get('partner_id')
-        sku_id = self.env['sku.sku'].search([('customer', '=', partner_id)])
-        if any(sku_id):
-            self.sku_id = sku_id.id
-        return res
+        sku_ids = self.env['sku.sku'].search([('customer', '=', partner_id)])
+        line_ids = []
+        for rec in sku_ids:
+            line_ids = [str(line.product_id.id) for line in rec.sku_product_info_ids if line.product_id.id]
+        child_str = ", ".join(tuple(line_ids))
+        product_ids = []
+        if child_str:
+            self._cr.execute("""
+                SELECT
+                    id
+                FROM
+                    product_product
+                WHERE
+                    id in (%s)
+            """ % (child_str))
+            res = self._cr.dictfetchall()
+            if res:
+                product_ids = [i['id'] for i in res]
+                args += [('id', 'in', product_ids)]
+        else:
+            args = [('id', 'in', product_ids)]
+        return super(ProductProduct, self)._search(args=args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
 
 
 class ProductTemplate(models.Model):
