@@ -11,7 +11,7 @@ class BuktiBankKeluarWiz(models.Model):
     def _default_journal(self):
         journals = self.env['account.journal'].search([('type', '=', 'bank')])
         if journals:
-            return journals[0]
+            return journals
         return self.env['account.journal']
     
     def _get_period(self):
@@ -40,12 +40,12 @@ class BuktiBankKeluarWiz(models.Model):
     def default_get(self, fields):
         res = super(BuktiBankKeluarWiz, self).default_get(fields)
         active_ids = self.env.context.get('active_ids')
-        if self.env.context.get('active_model') == 'account.move' and active_ids:
+        lines = []
+        if self.env.context.get('active_model') == 'account.move' and active_ids and res.get('journal_ids'):
             move_ids = self.env['account.move'].browse(
                 self.env.context.get('active_ids'))
-            lines = []
             for move in move_ids:
-                if move.journal_id.id == res.get('journal_id'):
+                if move.journal_id.id in res.get('journal_ids')[0][2]:
                     for line in move.line_ids:
                         if line.credit:
                             lines.append({'account_id':line.account_id.id,
@@ -67,7 +67,7 @@ class BuktiBankKeluarWiz(models.Model):
     date = fields.Date(required=True,  default=fields.Date.context_today)
     period_id = fields.Many2one('account.period', 'Period', required=False,
                                 default=_get_period, compute='_compute_period')
-    journal_id = fields.Many2one('account.journal', string='Journal', required=True, default=_default_journal)
+    journal_ids = fields.Many2many('account.journal', string='Journal', required=True, default=_default_journal)
     line_ids = fields.One2many('bukti.bank.keluar.line.wiz', 'bukti_id')
 
     @api.multi
@@ -78,7 +78,7 @@ class BuktiBankKeluarWiz(models.Model):
                           'account_id':rec.account_id.id,
                           'partner_id':rec.partner_id.id,
                           'credit':rec.credit})
-        self.env['bukti.bank.keluar'].create({'journal_id':self.journal_id.id,
+        self.env['bukti.bank.keluar'].create({'journal_ids':[(6, 0, self.journal_ids.ids)],
                                                 'date': self.date,
                                                 'period_id':self.period_id.id,
                                                 'ref':self.ref,

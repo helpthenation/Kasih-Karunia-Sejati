@@ -11,7 +11,7 @@ class BuktiBankKeluar(models.Model):
     ref = fields.Char(string='Reference', copy=False)
     date = fields.Date(required=True,  default=fields.Date.context_today)
     period_id = fields.Many2one('account.period', 'Period', required=False)
-    journal_id = fields.Many2one('account.journal', string='Journal', required=True)
+    journal_ids = fields.Many2many('account.journal', string='Journal', required=True)
     line_ids = fields.One2many('bukti.bank.keluar.line', 'bukti_id')
     
     @api.model

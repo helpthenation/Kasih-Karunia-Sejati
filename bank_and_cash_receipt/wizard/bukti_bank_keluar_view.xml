@@ -8,8 +8,8 @@
 				<sheet>
 					<group>
 						<group>
-							<field name="journal_id"
-								options="{'no_open': True, 'no_create': True}" readonly="1"/>
+							<field name="journal_ids"
+								options="{'no_open': True, 'no_create': True}" readonly="1" widget="many2many_tags"/>
 							<field name="date" readonly="1"/>
 							<field name="period_id" readonly="1"/>
 						</group>
@@ -20,7 +20,7 @@
 					<notebook>
 						<page string="Bank and Cash Receipt">
 							<field name="line_ids" widget="one2many_list" readonly="1"
-								context="{'line_ids': line_ids, 'journal_id': journal_id }">
+								context="{'line_ids': line_ids, 'journal_ids': journal_ids }">
 								<tree editable="bottom" string="Journal Items">
 									<field name="account_id"/>
 									<field name="name" />
