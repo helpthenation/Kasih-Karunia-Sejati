@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        
+        <!-- Budgets -->
+        <record model="ir.ui.view" id="crossovered_budget_view_form_ana_account">
+            <field name="name">crossovered.budget.form.analytic.account</field>
+            <field name="model">crossovered.budget</field>
+            <field name="inherit_id" ref="account_budget.crossovered_budget_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/notebook/page/field[@name='crossovered_budget_line']/tree/field[@name='analytic_account_id']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+                <xpath expr="//sheet/notebook/page/field[@name='crossovered_budget_line']/form/group/group/field[@name='analytic_account_id']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        
+    </data>
+</openerp>
