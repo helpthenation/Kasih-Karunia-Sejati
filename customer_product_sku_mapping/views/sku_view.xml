@@ -130,10 +130,9 @@
             <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="after">
                 <field name="sku_id" options="{'no_create': True}"/>
             </xpath>
-            <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
-                <!-- <attribute name="context">{'default_order_id': id}</attribute> -->
+            <!-- <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
                 <attribute name="options">{'no_create': True}</attribute>
-            </xpath>
+            </xpath> -->
         </field>
     </record>
     
