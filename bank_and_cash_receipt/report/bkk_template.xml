@@ -1,8 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template id="report_bkk">
-		<div class="page">
-			<div class="oe_structure" />
+	<template id="report_bukti_kas_keluar">
+		<t t-foreach="docs" t-as="doc">
+			<t
+				t-call="bank_and_cash_receipt.bkk_report_header_footer_call_template_id">
+				<t t-call="report.external_layout">
+					<div class="page">
+						<table class="table table-condensed"
+							style="margin-top:30px;">
+							<thead>
+								<tr>
+									<th>Account</th>
+									<th>Date</th>
+									<th>Partner</th>
+									<th>Label</th>
+									<th>Credit</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr t-foreach="doc.line_ids" t-as="line">
+									<td>
+										<span t-field="line.account_id.name" />
+									</td>
+									<td>
+										<span t-field="doc.date" />
+									</td>
+									<td>
+										<span t-field="line.partner_id.name" />
+									</td>
+									<td>
+										<span t-field="line.name" />
+									</td>
+									<td>
+										<span t-field="line.credit" />
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+									</td>
+									<td>
+										<span t-esc="sum(l.credit for l in doc.line_ids)" />
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="bottom-page" style="page-break-inside: avoid;">
+							<table border="1" width="100%">
+								<tr>
+									<td>
+										<strong>
+											<h4>
+												Pembukuan : ________________
+											</h4>
+										</strong>
+									</td>
+									<td>
+										<strong>
+											<h4>
+												Mengetahui : ________________
+											</h4>
+										</strong>
+									</td>
+									<td>
+										<strong>
+											<h4>
+												Menyetujui : ________________
+											</h4>
+										</strong>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<br />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<br />
+									</td>
+								</tr>
+								<tr>
+									<td style="text-align:right">
+										<strong>
+											<h4>
+												Kasir : ________________
+											</h4>
+										</strong>
+									</td>
+									<td style="text-align:center">
+										<strong>
+											<h4>
+												Penyetor : ________________
+											</h4>
+										</strong>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</t>
+			</t>
+		</t>
+	</template>
+
+	<template id="bkk_report_header_footer_call_template_id">
+		<t
+			t-call="bank_and_cash_receipt.bkk_report_template_header_template_id" />
+		<t t-raw="0" />
+	</template>
+
+	<template id="bkk_report_template_header_template_id">
+		<div class="header">
 			<div class="text-center">
 				<h2 style="margin-top:3px;">
 					PT Kasih Karunia Sejati
@@ -23,7 +131,8 @@
 					</strong>
 					<h5 style="margin-top:3px;">
 						Journal :
-						<span t-field="doc.journal_id.name" />
+						<span
+							t-esc="', '.join(map(lambda x: (x.name), doc.journal_ids))" />
 					</h5>
 				</div>
 				<div class="col-xs-6">
@@ -34,93 +143,7 @@
 					</h5>
 				</div>
 			</div>
-			<table class="table table-condensed" style="margin-top:30px;">
-				<thead>
-					<tr>
-						<th>Account</th>
-						<th>Date</th>
-						<th>Partner</th>
-						<th>Label</th>
-						<th>Credit</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr t-foreach="doc.line_ids" t-as="line">
-						<td>
-							<span t-field="line.account_id.name" />
-						</td>
-						<td>
-							<span t-field="doc.date" />
-						</td>
-						<td>
-							<span t-field="line.partner_id.name" />
-						</td>
-						<td>
-							<span t-field="line.name" />
-						</td>
-						<td>
-							<span t-field="line.credit" />
-						</td>
-					</tr>
-					<tr>
-						<td colspan="4">
-						</td>
-						<td>
-							<span t-esc="sum(l.credit for l in doc.line_ids)" />
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<table border="1" width="100%">
-				<tr>
-					<td>
-						<strong>
-							<h4>
-								Pembukuan : ________________
-							</h4>
-						</strong>
-					</td>
-					<td>
-						<strong>
-							<h4>
-								Mengetahui : ________________
-							</h4>
-						</strong>
-					</td>
-					<td>
-						<strong>
-							<h4>
-								Menyetujui : ________________
-							</h4>
-						</strong>
-					</td>
-				</tr>
-				<tr>
-					<td style="text-align:right">
-						<strong>
-							<h4>
-								Kasir : ________________
-							</h4>
-						</strong>
-					</td>
-					<td style="text-align:center">
-						<strong>
-							<h4>
-								Penyetor : ________________
-							</h4>
-						</strong>
-					</td>
-				</tr>
-			</table>
 		</div>
-	</template>
-
-	<template id="report_bukti_kas_keluar">
-		<t t-call="report.html_container">
-			<t t-foreach="docs" t-as="doc">
-				<t t-call="bank_and_cash_receipt.report_bkk" />
-			</t>
-		</t>
 	</template>
 
 	<report id="report_of_bkk" string="BKK" model="bukti.kas.keluar"
@@ -135,12 +158,12 @@
 		<field name="page_height">0</field>
 		<field name="page_width">0</field>
 		<field name="orientation">Portrait</field>
-		<field name="margin_top">10</field>
+		<field name="margin_top">60</field>
 		<field name="margin_bottom">20</field>
 		<field name="margin_left">5</field>
 		<field name="margin_right">5</field>
 		<field name="header_line" eval="False" />
-		<field name="header_spacing">25</field>
+		<field name="header_spacing">50</field>
 		<field name="dpi">90</field>
 	</record>
 

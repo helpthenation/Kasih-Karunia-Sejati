@@ -21,6 +21,7 @@ Bank and Cash Receipt
         'views/bukti_bank_masuk_view.xml',
         'views/bukti_kas_keluar_view.xml',
         'views/bukti_kas_masuk_view.xml',
+        'views/template.xml',   
         'wizard/bukti_bank_keluar_view.xml',
         'wizard/bukti_bank_masuk_view.xml',
         'wizard/bukti_kas_keluar_view.xml',
