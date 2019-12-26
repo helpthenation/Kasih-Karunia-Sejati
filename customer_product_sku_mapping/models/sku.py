@@ -120,28 +120,29 @@ class ProductProduct(models.Model):
 
     @api.model
     def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
-        partner_id = self._context.get('partner_id')
-        sku_ids = self.env['sku.sku'].search([('customer', '=', partner_id)])
-        line_ids = []
-        for rec in sku_ids:
-            line_ids = [str(line.product_id.id) for line in rec.sku_product_info_ids if line.product_id.id]
-        child_str = ", ".join(tuple(line_ids))
-        product_ids = []
-        if child_str:
-            self._cr.execute("""
-                SELECT
-                    id
-                FROM
-                    product_product
-                WHERE
-                    id in (%s)
-            """ % (child_str))
-            res = self._cr.dictfetchall()
-            if res:
-                product_ids = [i['id'] for i in res]
-                args += [('id', 'in', product_ids)]
-        else:
-            args = [('id', 'in', product_ids)]
+        if self._context.get('res_model') == 'sale.order':
+            partner_id = self._context.get('partner_id')
+            sku_ids = self.env['sku.sku'].search([('customer', '=', partner_id)])
+            line_ids = []
+            for rec in sku_ids:
+                line_ids = [str(line.product_id.id) for line in rec.sku_product_info_ids if line.product_id.id]
+            child_str = ", ".join(tuple(line_ids))
+            product_ids = []
+            if child_str:
+                self._cr.execute("""
+                    SELECT
+                        id
+                    FROM
+                        product_product
+                    WHERE
+                        id in (%s)
+                """ % (child_str))
+                res = self._cr.dictfetchall()
+                if res:
+                    product_ids = [i['id'] for i in res]
+                    args += [('id', 'in', product_ids)]
+            else:
+                args = [('id', 'in', product_ids)]
         return super(ProductProduct, self)._search(args=args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
 
 
