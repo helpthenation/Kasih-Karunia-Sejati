@@ -78,11 +78,20 @@ class BuktiBankMasukWiz(models.Model):
                           'account_id':rec.account_id.id,
                           'partner_id':rec.partner_id.id,
                           'debit':rec.debit})
-        self.env['bukti.bank.masuk'].create({'journal_ids':[(6, 0, self.journal_ids.ids)],
-                                                'date': self.date,
-                                                'period_id':self.period_id.id,
-                                                'ref':self.ref,
-                                                'line_ids':[(0, 0, l) for l in lines]})
+        obj = self.env['bukti.bank.masuk'].create({'journal_ids':[(6, 0, self.journal_ids.ids)],
+                                                    'date': self.date,
+                                                    'period_id':self.period_id.id,
+                                                    'ref':self.ref,
+                                                    'line_ids':[(0, 0, l) for l in lines]})
+        form_view = self.env.ref('bank_and_cash_receipt.view_bukti_bank_masuk_form')
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'bukti.bank.masuk',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'views': [(form_view.id, 'form')],
+            'res_id': obj.id,
+        }
 
 
 class BuktiBankMasukLineWiz(models.Model):

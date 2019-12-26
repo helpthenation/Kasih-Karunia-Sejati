@@ -3,7 +3,7 @@
 	<template id="report_bukti_kas_keluar">
 		<t t-foreach="docs" t-as="doc">
 			<t
-				t-call="bank_and_cash_receipt.bkk_report_header_footer_call_template_id">
+				t-call="bank_and_cash_receipt.bbm_report_header_footer_call_template_id">
 				<t t-call="report.external_layout">
 					<div class="page">
 						<table class="table table-condensed"
@@ -20,7 +20,7 @@
 							<tbody>
 								<tr t-foreach="doc.line_ids" t-as="line">
 									<td>
-										<span t-field="line.account_id.name" />
+										<span t-field="line.account_id.code" /> - <span t-field="line.account_id.name" />
 									</td>
 									<td>
 										<span t-field="doc.date" />
@@ -36,15 +36,17 @@
 									</td>
 								</tr>
 								<tr>
-									<td colspan="4">
+									<td colspan="3">
+									</td>
+									<td style="text-align:right;padding-right:20px;"><b>Total</b>
 									</td>
 									<td>
-										<span t-esc="sum(l.credit for l in doc.line_ids)" />
+										<t t-esc="'{0:,.2f}'.format(sum(l.credit for l in doc.line_ids))" />
 									</td>
 								</tr>
 							</tbody>
 						</table>
-						<div class="bottom-page" style="page-break-inside: avoid;">
+						<div class="bottom-page" style="page-break-inside: avoid;margin-top:40px;">
 							<table border="1" width="100%">
 								<tr>
 									<td>
@@ -103,13 +105,13 @@
 		</t>
 	</template>
 
-	<template id="bkk_report_header_footer_call_template_id">
+	<template id="bbm_report_header_footer_call_template_id">
 		<t
-			t-call="bank_and_cash_receipt.bkk_report_template_header_template_id" />
+			t-call="bank_and_cash_receipt.bbm_report_template_header_template_id" />
 		<t t-raw="0" />
 	</template>
 
-	<template id="bkk_report_template_header_template_id">
+	<template id="bbm_report_template_header_template_id">
 		<div class="header">
 			<div class="text-center">
 				<h2 style="margin-top:3px;">
