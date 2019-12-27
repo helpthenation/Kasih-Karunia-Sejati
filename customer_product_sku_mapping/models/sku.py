@@ -127,7 +127,9 @@ class ProductProduct(models.Model):
                 line_ids = []
                 for rec in sku_ids:
                     for line in rec.sku_product_info_ids:
-                        line_ids.append(str(line.product_id.id))
+                        if line.product_id.id not in line_ids:
+                            line_ids.append(str(line.product_id.id))
+                print "Line_idddddddddddddd", line_ids
                 child_str = ", ".join(tuple(line_ids))
                 product_ids = []
                 if child_str:
@@ -145,6 +147,7 @@ class ProductProduct(models.Model):
                         args += [('id', 'in', product_ids)]
                 else:
                     args = [('id', 'in', product_ids)]
+        print "argsss", args
         return super(ProductProduct, self)._search(args=args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
 
 
