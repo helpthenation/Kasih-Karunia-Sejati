@@ -115,43 +115,43 @@ class SaleOrderLine(models.Model):
         return domain
 
 
-# class ProductProduct(models.Model):
-#     _inherit = 'product.product'
-# 
-#     @api.model
-#     def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
-#         print "xxxxxxxxxxxxxxxxxxxxx"
-#         print "contezxxxxxxxxxxxxxxx", self._context
-#         if self._context.get('res_model') == 'sale.order':
-#             partner_id = self._context.get('partner_id')
-#             sku_ids = self.env['sku.sku'].search([('customer', '=', partner_id)])
-#             print "sku_idddddddddddddddddd", sku_ids
-#             if sku_ids:
-#                 line_ids = []
-#                 for rec in sku_ids:
-#                     for line in rec.sku_product_info_ids:
-#                         if line.product_id.id not in line_ids:
-#                             line_ids.append(str(line.product_id.id))
-#                 print "Line_idddddddddddddd", line_ids
-#                 child_str = ", ".join(tuple(line_ids))
-#                 product_ids = []
-#                 if child_str:
-#                     self._cr.execute("""
-#                         SELECT
-#                             id
-#                         FROM
-#                             product_product
-#                         WHERE
-#                             id in (%s)
-#                     """ % (child_str))
-#                     res = self._cr.dictfetchall()
-#                     if res:
-#                         product_ids = [i['id'] for i in res]
-#                         args += [('id', 'in', product_ids)]
-#                 else:
-#                     args = [('id', 'in', product_ids)]
-#         print "argsss", args
-#         return super(ProductProduct, self)._search(args=args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
+ 
+    @api.model
+    def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
+        print "xxxxxxxxxxxxxxxxxxxxx"
+        print "contezxxxxxxxxxxxxxxx", self._context
+        if self._context.get('res_model') == 'sale.order':
+            partner_id = self._context.get('partner_id')
+            sku_ids = self.env['sku.sku'].search([('customer', '=', partner_id)])
+            print "sku_idddddddddddddddddd", sku_ids
+            if sku_ids:
+                line_ids = []
+                for rec in sku_ids:
+                    for line in rec.sku_product_info_ids:
+                        if line.product_id.id not in line_ids:
+                            line_ids.append(str(line.product_id.id))
+                print "Line_idddddddddddddd", line_ids
+                child_str = ", ".join(tuple(line_ids))
+                product_ids = []
+                if child_str:
+                    self._cr.execute("""
+                        SELECT
+                            id
+                        FROM
+                            product_product
+                        WHERE
+                            id in (%s)
+                    """ % (child_str))
+                    res = self._cr.dictfetchall()
+                    if res:
+                        product_ids = [i['id'] for i in res]
+                        args += [('id', 'in', product_ids)]
+                else:
+                    args = [('id', 'in', product_ids)]
+        print "argsss", args
+        return super(ProductProduct, self)._search(args=args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
 
 
 class ProductTemplate(models.Model):
