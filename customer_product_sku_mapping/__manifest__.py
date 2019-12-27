@@ -13,7 +13,7 @@
     """,
     "version": "1.0",
     "category": "SKU",
-    "author": "Hashmicro / Shivam",
+    "author": "Hashmicro / Shivam / Hetal",
     "website": "http://www.hashmicro.com",
     "depends": [
         'sales_team', 'stock', 'account',

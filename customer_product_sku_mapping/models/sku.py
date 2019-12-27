@@ -117,15 +117,12 @@ class SaleOrderLine(models.Model):
 
 class ProductProduct(models.Model):
     _inherit = 'product.product'
- 
+
     @api.model
     def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
-        print "xxxxxxxxxxxxxxxxxxxxx"
-        print "contezxxxxxxxxxxxxxxx", self._context
         if self._context.get('res_model') == 'sale.order':
             partner_id = self._context.get('partner_id')
             sku_ids = self.env['sku.sku'].search([('customer', '=', partner_id)])
-            print "sku_idddddddddddddddddd", sku_ids
             if sku_ids:
                 line_ids = []
                 for rec in sku_ids:
