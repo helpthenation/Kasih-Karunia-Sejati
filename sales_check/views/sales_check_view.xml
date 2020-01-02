@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+        <record id="sales_check_tree_view" model="ir.ui.view">
+            <field name="name">sales.check.tree.view</field>
+            <field name="model">sales.check</field>
+            <field name="arch" type="xml">
+                <tree string="Sales Check">
+                    <field name="name"/>
+                    <field name="create_date"/>
+                    <field name="start_date"/>
+                    <field name="partner_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+         <record id="sales_check_form_view" model="ir.ui.view">
+            <field name="name">sales.check.form.view</field>
+            <field name="model">sales.check</field>
+            <field name="arch" type="xml">
+                <form string="Sales Check">
+                    <header>
+                        <button string="Validate" icon="" states="draft" type="object" name="action_validate" class="oe_highlight"/>
+                        <button string="Create Invoice" icon="" states="validate" type="object" name="action_create_invoice" class="oe_highlight"/>
+                        <button string="Cancel" icon="" states="draft" type="object" name="action_cancel"/>
+
+                        <field name="state" widget="statusbar"/>
+                    </header>
+
+                  <sheet>
+                    <group>
+                        <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                        <group>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+                            <field name="create_date"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="start_date"/>
+                            </group>
+                            <group>
+                                <field name="end_date"/>
+                            </group>
+                        </group>
+                    </group>
+                    <notebook>
+                            <page string="Order Lines">
+                                <field name="order_line" mode="tree">
+                                    <tree string="Sales Order Lines" editable="bottom">
+                                        <field name="state" invisible="1"/>
+                                        <field name="create_date"/>
+                                        <field name="so_name"/>
+                                        <field name="so_line_id" invisible="1"/>
+                                        <field name="product_id" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                                        <field name="sku_id" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                                        <field name="product_uom_qty" string="Ordered Qty" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                                        <field name="product_uom" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                                        <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                                        <field name="price_unit" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                                        <field name="tax_id" widget="many2many_tags" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                                        <field name="discount" groups="sale.group_discount_per_so_line" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                                        <field name="price_subtotal" widget="monetary" groups="sale.group_show_price_subtotal" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                                        <field name="price_total" widget="monetary" groups="sale.group_show_price_total" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                                        <field name="check_state"/>
+                                        <field name="currency_id" invisible="1"/>
+                                </tree>
+                            </field>
+
+                                <group string="Import Sales Check">
+                                    <field name="xls_file" filename="datas_fname"/>
+                                    <field name="datas_fname" invisible="True"/>
+                                    <button string="Import customer sales Import" name="import_customer_sales_import" type="object" class="btn-primary"/>
+                                </group>
+
+                                <field name="sales_check_line_ids" editable="bottom">
+                                    <tree string="Sales Check Import" readonly="1">
+                                        <field name="customer_date" readonly="1"/>
+                                        <field name="partner_id" readonly="1"/>
+                                        <field name="sku_number" readonly="1"/>
+                                        <field name="qty" readonly="1"/>
+                                        <field name="product_uom" readonly="1"/>
+                                        <field name="price_unit" readonly="1"/>
+                                        <field name="tax_percentage" readonly="1"/>
+                                        <field name="tax_amount" readonly="1"/>
+                                        <field name="sub_total" readonly="1"/>
+                                        <field name="total_amount" readonly="1"/>
+                                        <field name="is_checked"/>
+                                    </tree>
+                                </field>
+
+                            <group name="sale_total">
+                                <group>
+                                    <field name="amount_total" string="Sales Amount" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                    <field name="sale_order_lines_count" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                </group>
+
+                                <group>
+                                    <field name="total_sales_data"  class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                    <field name="customer_excel_count" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                </group>
+
+                            </group>
+                            <div class="oe_clear"/>
+                        </page>
+
+                    </notebook>
+                  </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="action_sales_check_customer_sales" model="ir.actions.act_window">
+            <field name="name">Sales Check</field>
+            <field name="res_model">sales.check</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+        </record>
+
+    <!-- Sales Check Excel Import Tree view -->
+    <record id="sales_check_excel_tree_view" model="ir.ui.view">
+            <field name="name">sales.check.excel.tree.view</field>
+            <field name="model">sales.check.excel.data</field>
+            <field name="arch" type="xml">
+                <tree string="Sales Check Import" readonly="1">
+                    <field name="customer_date" readonly="1"/>
+                    <field name="partner_id" readonly="1"/>
+                    <field name="sku_number" readonly="1"/>
+                    <field name="qty" readonly="1"/>
+                    <field name="product_uom" readonly="1"/>
+                    <field name="price_unit" readonly="1"/>
+                    <field name="tax_percentage" readonly="1"/>
+                    <field name="tax_amount" readonly="1"/>
+                    <field name="sub_total" readonly="1"/>
+                    <field name="total_amount" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <menuitem action="action_sales_check_customer_sales" id="menu_sales_check_customer_sales_invoice" parent="account.menu_finance_receivables" sequence="10"/>
+
+
+        <record id="sales_check_order_tree_inherit" model="ir.ui.view">
+            <field name="name">sales.check.tree.add.shipper</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <field name="invoice_status" position="after">
+                    <field name="check_state" string ="Check Status"/>
+                </field>
+            </field>
+        </record>
+</odoo>
