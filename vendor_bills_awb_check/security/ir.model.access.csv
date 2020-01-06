@@ -1,4 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_vendor_bill_check,access_vendor_bill_check,model_vendor_bill_check,,1,1,1,1
-access_vendor_bill_check_line,access_vendor_bill_check_line,model_vendor_bill_check_line,,1,1,1,1
-access_vendor_bill_check_excel_data,access_vendor_bill_check_excel_data,model_vendor_bill_check_excel_data,,1,1,1,1
