@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="inherits_view_order_form" model="ir.ui.view">
+        <field name="name">sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="credit_approving_matrix_id" options="{'no_create': True,'no_open': True}"/>
+                <field name="is_multiline_approval" invisible="1"/>
+                <field name="is_button_rejected" invisible="1"/>
+                <field name="credit_exceed" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//form/header/button[@name='action_quotation_send']" position="attributes">
+                <attribute name="states">approved</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_confirm'][1]" position="replace">
+            	 <button name="action_confirm"  string="Confirm Sale" class="btn-primary o_sale_confirm" type="object" states="draft"/>
+            </xpath>
+
+            <xpath expr="//button[@name='action_confirm'][2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='print_quotation'][1]" position="attributes">
+                <attribute name="states">sale,approved</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_draft']" position="attributes">
+                <attribute name="states">cancel,rejected</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_cancel']" position="attributes">
+                <attribute name="states">draft,to_approved,sent,sale,rejected</attribute>
+            </xpath>
+
+            <xpath expr="//header/button[@name='action_quotation_send']" position="after">
+              <!--   <button name="request_quote_approve" string="Request for Approve" type="object" class="oe_highlight" 
+                    attrs="{'invisible':['|',('state', 'not in', ('draft','sent')),('credit_exceed','=',False)]}"/> -->
+                <button name="request_quote_approve" string="Request for Approve" type="object" class="oe_highlight" invisible="1"/>
+ 
+                
+                <button name="quote_approved" string="Approve" type="object" class="oe_highlight"
+                        attrs="{'invisible':['|',('is_multiline_approval', '=', False),('state', '!=', 'to_approved')]}"/>
+                
+                <button name="rfq_rejected" string="Reject" type="object" class="oe_highlight"
+                        states="draft,sent"/>
+            </xpath>
+
+            <xpath expr="//header/button[@name='quote_approved']" position="replace">
+                <button name="quote_approved" string="Approve" type="object" class="oe_highlight"
+                        attrs="{'invisible':['|',('state', '!=', 'to_approved'),('is_multiline_approval', '=', True)]}"/>
+            </xpath>
+
+            <xpath expr="//header/button[@name='rfq_rejected']" position="replace">
+                <button name="rfq_rejected" string="Reject" type="object" class="oe_highlight"
+                        attrs="{'invisible':['|',('state', '!=', 'to_approved'),('is_multiline_approval', '=', True)]}"/>
+
+            </xpath>
+            
+            <xpath expr="//notebook" position="inside">
+                <page string="Approve Matrix Lines">
+                    <field name="credit_approving_matrix_line_ids" options='{"no_open": True}'>
+                        <tree>
+                            <field name="sequence" invisible="1"/>
+                            <field name="user_id" widget="many2many_tags"/>
+                            <field name="min_approver" invisible="1"/>
+                            <field name="min_amount" invisible="1"/>
+                            <field name="max_amount" invisible="1"/>
+                            <field name="approved"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    
+</odoo>

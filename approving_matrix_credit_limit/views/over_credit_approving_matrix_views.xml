@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    
+    <record id="view_credit_approving_matrix_form" model="ir.ui.view">
+        <field name="name">credit.approving.matrix.form</field>
+        <field name="model">credit.approving.matrix</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="name"/>
+                        <field name="branch_id"/>
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <field name="credit_approving_matrix_ids">
+                            <tree editable="bottom">
+                                <field name="sequence"/>
+                                <field name="user_id" widget="many2many_tags"/>
+                                <field name="approved_user_ids" widget="many2many_tags"/>
+                                <field name="min_approver"/>
+                                <field name="min_amount"/>
+                                <field name="max_amount"/>
+                            </tree>
+                        </field>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_credit_approving_matrix_tree" model="ir.ui.view">
+        <field name="name">credit.approving.matrix.tree</field>
+        <field name="model">credit.approving.matrix</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="branch_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_credit_approving_matrix" model="ir.actions.act_window">
+        <field name="name">Over Credit Approving Matrix</field>
+        <field name="res_model">credit.approving.matrix</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem id="approving_matrix" 
+              name="Approving Matrix"
+              parent="account.menu_finance_configuration"
+              sequence="4"/>
+
+    <menuitem action="action_credit_approving_matrix" 
+              id="menu_over_credit_approving" 
+              parent="approving_matrix" 
+              sequence="1"/>
+
+</odoo>

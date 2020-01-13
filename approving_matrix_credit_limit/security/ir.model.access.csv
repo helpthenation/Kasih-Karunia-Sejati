@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_credit_approving_matrix,access_credit_approving_matrix,model_credit_approving_matrix,,1,1,1,1
+access_credit_approving_lines,access_credit_approving_lines,model_credit_approving_lines,,1,1,1,1
