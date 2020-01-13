@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="approving_matrix_analytic_budget_configuration_list">
+            <field name="name">Approving Matrix Analytic Budget List</field>
+            <field name="model">approving.matrix.analytic.budget</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" string="Name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="approving_matrix_analytic_budget_configuration_form">
+            <field name="name">Approving Matrix Analytic Budget Form</field>
+            <field name="model">approving.matrix.analytic.budget</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name" string="Name"/>
+                            <!-- <field name="allow_budget"/> -->
+                        </group>
+                        <group string="Amount"/>
+                        <field name="line_ids">
+                            <tree editable="bottom">
+                                <field name="sequence" string="Sequence"/>
+                                <field name="user_ids" string="Users" widget="many2many_tags"/>
+                                <field name="min_approver" string="Minimum Approver"/>
+                                <field name="min" string="Minimum Amount"/>
+                                <field name="max" string="Maximum Amount"/>
+                            </tree>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="approving_matrix_analytic_budget_configuration_action">
+            <field name="name">Approving Matrix Analytic Budget</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">approving.matrix.analytic.budget</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+        </record>
+
+        <menuitem name="Approving Matrix Analytic Budget" id="approving_matrix_analytic_budget_menu" parent="account.menu_analytic_accounting"
+                  action="approving_matrix_analytic_budget_configuration_action"/>
+    </data>
+</odoo>

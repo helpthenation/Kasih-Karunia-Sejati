@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="view_account_analytic_account_form_inherit">
+            <field name="name">account.analytic.account.form.inherit</field>
+            <field name="model">account.analytic.account</field>
+            <field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//sheet" position="before">
+                    <header>
+                        <button name="request_approve" string="RFA Budget" type="object"
+                                class="oe_highlight" attrs="{'invisible':[('state', 'not in', ('draft'))]}"/>
+                        <button name="approving" string="Approve Budget" type="object" class="oe_highlight"
+                                attrs="{'invisible':[('state', '!=', 'to_approve')]}" />
+                        <button name="rejected" string="Reject RFQ" type="object" class="oe_highlight"
+                                attrs="{'invisible':[('state', '!=', 'to_approve')]}" />
+                        <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,done,reject" />
+                    </header>
+                </xpath>
+
+                <xpath expr="//group[@name='main']/group[2]/field[@name='company_id']" position="before">
+                     <field name="approving_matrix_id" string="Approving Matrix" attrs="{'readonly':[('state', 'in', ['approved','reject'])]}"/>
+                </xpath>
+
+                <xpath expr="//sheet/div/h1/field[@name='name']" position="attributes">
+                     <attribute name="attrs">{'readonly':[('state', 'in', ['approved','reject'])]}</attribute>
+                </xpath>
+                <xpath expr="//sheet/group[@name='main']/group[1]/field[@name='code']" position="attributes">
+                     <attribute name="attrs">{'readonly':[('state', 'in', ['approved','reject'])]}</attribute>
+                </xpath>
+                <xpath expr="//sheet/group[@name='main']/group[1]/field[@name='partner_id']" position="attributes">
+                     <attribute name="attrs">{'readonly':[('state', 'in', ['approved','reject'])]}</attribute>
+                </xpath>
+                <xpath expr="//sheet/group[@name='main']/group[2]/field[@name='tag_ids']" position="attributes">
+                     <attribute name="attrs">{'readonly':[('state', 'in', ['approved','reject'])]}</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_inherit_account_budget">
+            <field name="name">account.analytic.account</field>
+            <field name="model">account.analytic.account</field>
+            <field name="inherit_id" ref="account_budget.view_account_analytic_account_form_inherit_budget"/>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+
+                <xpath expr="//notebook[@groups='account.group_account_user']" position="inside">
+                    <page string="Approve Matrix Lines">
+                        <field name="approving_matrix_line_ids" options='{"no_open": True}'>
+                            <tree>
+                                <field name="user_ids" widget="many2many_tags"/>
+                                <field name="approved"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_inherit_account_analytic_account_list">
+            <field name="name">account.analytic.account.list</field>
+            <field name="model">account.analytic.account</field>
+            <field name="inherit_id" ref="analytic.view_account_analytic_account_list"/>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+
+                <xpath expr="//tree" position="inside">
+                    <field name="state"/>
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</odoo>
