@@ -69,6 +69,10 @@ class SyncSettings(models.Model):
                 self.import_sale_order(cr, conn)
                 # purchase_order import
                 self.import_purchase_order(cr, conn)
+                # Stock Adjustment import
+                self.import_stock_inventory(cr, conn)
+                # internal transfer import
+                self.import_internal_transfer(cr, conn)
             except Exception, e:
                 _logger.error('\nPowerone sync Error: %s\n' % str(e))
             finally:
@@ -349,6 +353,108 @@ class SyncSettings(models.Model):
             query = 'UPDATE purchase_order SET odoo_id=%s WHERE id=%s;' % (purchase_order.id, line[columns.index('id')])
             cr.execute(query)
             conn.commit()
+        return True
+
+    @api.multi
+    def import_stock_inventory(self, cr, conn):
+        query = "SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name='stock_inventory';"
+        cr.execute(query)
+        columns = map(lambda x: x[0], cr.fetchall())
+        # Process data
+        query = "SELECT * FROM stock_inventory WHERE odoo_id is NULL;"
+        cr.execute(query)
+        for line in cr.fetchall():
+            vals = {}
+            vals['name'] = line[columns.index('name')]
+            if line[columns.index('location_id')]:
+                location_id = self.env['stock.location'].search([('name', 'ilike', line[columns.index('location_id')])], limit=1)
+                if not location_id:
+                    location_id = self.env['stock.location'].create({'name': line[columns.index('location_id')], 'usage': 'internal'})
+                vals['location_id'] = location_id.id
+            vals['date'] = line[columns.index('date')]
+            vals['filter'] = line[columns.index('filter')] or 'none'
+            # if line[columns.index('partner_id')]:
+            #     partner_id = self.env['res.partner'].search([('name', '=', line[columns.index('partner_id')])], limit=1)
+            #     if not partner_id:
+            #         partner_id = self.env['res.partner'].create({'name': line[columns.index('partner_id')]})
+            #     vals['partner_id'] = partner_id.id
+            vals['state'] = line[columns.index('state')]
+            # Create stock_inventory in odoo
+            stock_inventory = self.env['stock.inventory'].create(vals)
+
+            order_line_vals = {}
+            if line[columns.index('product_id')]:
+                product_id = self.env['product.product'].search([('name', 'ilike', line[columns.index('product_id')])],limit=1)
+                if not product_id:
+                    product_id = self.env['product.product'].create({'name': line[columns.index('product_id')], 'categ_id': 81})
+                order_line_vals['product_id'] = product_id.id
+                order_line_vals['product_uom_id'] = product_id.uom_id.id
+            order_line_vals['inventory_id'] = stock_inventory.id
+            location_id = self.env['stock.location'].search([('name', '=', 'Stock')], limit=1)
+            if location_id:
+                order_line_vals['location_id'] = location_id.id
+
+            # Create stock_inventory_line in odoo
+            self.env['stock.inventory.line'].create(order_line_vals)
+            # Update powerone table
+            query = 'UPDATE stock_inventory SET odoo_id=%s WHERE id=%s;' % (stock_inventory.id, line[columns.index('id')])
+            cr.execute(query)
+            conn.commit()
+        return True
+
+    @api.multi
+    def import_internal_transfer(self, cr, conn):
+        query = "SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name='internal_transfer';"
+        cr.execute(query)
+        columns = map(lambda x: x[0], cr.fetchall())
+        # Process data
+        query = "SELECT * FROM internal_transfer WHERE odoo_id is NULL;"
+        cr.execute(query)
+        for line in cr.fetchall():
+            vals = {}
+            vals['name'] = line[columns.index('name')]
+            vals['schedule_date'] = fields.Datetime.now()
+            if line[columns.index('source_loc_id')]:
+                source_loc_id = self.env['stock.location'].search([('name', 'ilike', line[columns.index('source_loc_id')])],limit=1)
+                if not source_loc_id:
+                    source_loc_id = self.env['stock.location'].create({'name': line[columns.index('source_loc_id')], 'usage': 'internal'})
+                vals['source_loc_id'] = source_loc_id.id
+            if line[columns.index('dest_loc_id')]:
+                dest_loc_id = self.env['stock.location'].search([('name', 'ilike', line[columns.index('dest_loc_id')])],limit=1)
+                if not dest_loc_id:
+                    dest_loc_id = self.env['stock.location'].create({'name': line[columns.index('dest_loc_id')], 'usage': 'internal'})
+                vals['dest_loc_id'] = dest_loc_id.id
+
+            if line[columns.index('picking_type_outgoing_id')]:
+                picking_type_outgoing_id = self.env['stock.picking.type'].search([('name', '=', line[columns.index('picking_type_outgoing_id')])],limit=1)
+                if not picking_type_outgoing_id:
+                    picking_type_outgoing_id = self.env['stock.picking.type'].create({'name': line[columns.index('picking_type_outgoing_id')]})
+                vals['picking_type_outgoing_id'] = picking_type_outgoing_id.id
+            if line[columns.index('picking_type_incoming_id')]:
+                picking_type_incoming_id = self.env['stock.picking.type'].search([('name', '=', line[columns.index('picking_type_incoming_id')])], limit=1)
+                if not picking_type_incoming_id:
+                    picking_type_outgoing_id = self.env['stock.picking.type'].create({'name': line[columns.index('picking_type_incoming_id')]})
+                vals['picking_type_incoming_id'] = picking_type_incoming_id.id
+            vals['state'] = 'draft'
+            # Create internal_transfer in odoo
+            internal_transfer = self.env['internal.transfer'].create(vals)
+
+            order_line_vals = {}
+            if line[columns.index('product_id')]:
+                product_id = self.env['product.product'].search([('name', 'ilike', line[columns.index('product_id')])],limit=1)
+                if not product_id:
+                    product_id = self.env['product.product'].create({'name': line[columns.index('product_id')], 'categ_id': 81})
+                order_line_vals['product_id'] = product_id.id
+                order_line_vals['uom_id'] = product_id.uom_id.id
+            order_line_vals['product_uom_qty'] = line[columns.index('product_uom_qty')]
+            order_line_vals['transfer_id'] = internal_transfer.id
+            # Create stock_inventory_line in odoo
+            self.env['internal.transfer.line'].create(order_line_vals)
+            # Update powerone table
+            query = 'UPDATE internal_transfer SET odoo_id=%s WHERE id=%s;' % (internal_transfer.id, line[columns.index('id')])
+            cr.execute(query)
+            conn.commit()
+            internal_transfer.button_confirm()
         return True
 
 SyncSettings()
