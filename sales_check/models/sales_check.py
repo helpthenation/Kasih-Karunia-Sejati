@@ -240,7 +240,7 @@ class sales_check(models.Model):
             matching_data = []
             for obj in rec.order_line:
                 vals = {}
-                vals['sku_id'] = obj.sku_id or ''
+                vals['sku_id'] = obj.sku_id.name or ''
                 vals['date'] = str(obj.so_line_id.order_id.date_order)
                 vals['qty'] = obj.product_uom_qty
                 vals['total'] = obj.price_subtotal
@@ -259,7 +259,25 @@ class sales_check(models.Model):
                     uom_id = self.env['product.uom'].search([('name','ilike',dt[4])],limit=1)
                     is_match = False
                     for match_data in matching_data:
-                        price_total = float(dt[6]) + float(dt[8])
+                        price_total = 0
+                        sub_total = 0
+                        tax_amount = 0
+                        try:
+                            sub_total = float(dt[6])
+                        except:
+                            sub_total = 0
+
+                        try:
+                            tax_amount = float(dt[8])
+                        except:
+                            tax_amount = 0
+
+                        price_total = sub_total + tax_amount
+
+                        print str(dt[2]) , str(match_data.get('sku_id'))
+                        print str(dt[0]), str(match_data.get('date'))
+                        print dt[3] , match_data.get('qty')
+                        print price_total , match_data.get('total')
 
                         if str(dt[2]) == str(match_data.get('sku_id')) and str(dt[0]).split(' ')[0] == str(match_data.get('date')).split(' ')[0] and dt[3] == match_data.get('qty') and price_total == match_data.get('total'):
                             is_match = True
@@ -339,7 +357,7 @@ class SalesCheckLine(models.Model):
 
     company_id = fields.Many2one(related='order_id.company_id', string='Company', store=True, readonly=True)
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
-    sku_id = fields.Many2one('sku.sku', string="No.SKU")
+    sku_id = fields.Many2one('sku.sku', string="No.SKU",related="so_line_id.sku_id")
     currency_id = fields.Many2one("res.currency", related='order_id.currency_id', string="Currency", readonly=True)
 
     @api.depends('price_unit', 'discount')
@@ -376,7 +394,7 @@ class SalesCheckExcelDate(models.Model):
     _name = 'sales.check.excel.data'
 
     sales_check_id = fields.Many2one('sales.check')
-    customer_date = fields.Datetime(string='Date', readonly=True)
+    customer_date = fields.Date(string='Date', readonly=True)
     partner_id = fields.Many2one('res.partner', string='Customer',readonly=True)
     sku_number = fields.Char('SKU')
     qty = fields.Float('Qty')

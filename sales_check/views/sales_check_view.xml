@@ -22,7 +22,7 @@
                 <form string="Sales Check">
                     <header>
                         <button string="Validate" icon="" states="draft" type="object" name="action_validate" class="oe_highlight"/>
-                        <button string="Create Invoice" icon="" states="validate" type="object" name="action_create_invoice" class="oe_highlight"/>
+                        <!--<button string="Create Invoice" icon="" states="validate" type="object" name="action_create_invoice" class="oe_highlight"/>-->
                         <button string="Cancel" icon="" states="draft" type="object" name="action_cancel"/>
 
                         <field name="state" widget="statusbar"/>
