@@ -8,7 +8,7 @@
     'website': "http://www.hashmicro.com",
     'category': 'Sale',
     'version': '1.2',
-    'depends': ['base','mail', 'account', 'sale', 'branch'],
+    'depends': ['base','mail', 'account', 'sale'],
     'data': [
         'security/ir.model.access.csv',
         'wizard/credit_limit_wizard_view.xml',
