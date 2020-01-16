@@ -274,11 +274,6 @@ class sales_check(models.Model):
 
                         price_total = sub_total + tax_amount
 
-                        print str(dt[2]) , str(match_data.get('sku_id'))
-                        print str(dt[0]), str(match_data.get('date'))
-                        print dt[3] , match_data.get('qty')
-                        print price_total , match_data.get('total')
-
                         if str(dt[2]) == str(match_data.get('sku_id')) and str(dt[0]).split(' ')[0] == str(match_data.get('date')).split(' ')[0] and dt[3] == match_data.get('qty') and price_total == match_data.get('total'):
                             is_match = True
                             sale_line_obj = self.env['sale.order.line'].browse(match_data.get('sale_order_line_id'))
@@ -320,7 +315,7 @@ class SalesCheckLine(models.Model):
     check_state = fields.Selection([
         ('match', 'match'),
         ('mismatch', 'mismatch'),
-    ], string='Status')
+    ], string='Status',default='mismatch')
     price_unit = fields.Float('Unit Price', required=True, digits=dp.get_precision('Product Price'), default=0.0)
 
     price_subtotal = fields.Monetary(compute='_compute_amount', string='Subtotal', readonly=True, store=True)
