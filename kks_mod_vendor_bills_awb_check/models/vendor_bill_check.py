@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
 import odoo.addons.decimal_precision as dp
 from xlrd import open_workbook
+import xlwt
+import xlsxwriter
+from cStringIO import StringIO
 from odoo import api, exceptions, fields, models, _, tools, registry
-from odoo.osv import osv
-from odoo.exceptions import UserError, ValidationError
+from datetime import datetime
 import xlrd ,datetime
 import base64
 import io
@@ -278,6 +279,54 @@ class VendorBillCheck(models.Model):
             })
 
     @api.multi
+    def download_template_excel(self):
+        filename = 'VendorBillCheckTemplate.xls'
+        workbook = xlwt.Workbook(encoding="UTF-8")
+        worksheet = workbook.add_sheet('Patients Info')
+        style = xlwt.easyxf('font:height 200, bold True, name Arial;align: horiz center; ')
+
+        worksheet.write(0, 0, 'Vendor', style)
+        worksheet.write(0, 1, str(self.partner_id.name))
+
+        worksheet.write(2, 0, 'DATE', style)
+        worksheet.write(2, 1, 'VENDOR', style)
+        worksheet.write(2, 2, 'AWB', style)
+        worksheet.write(2, 3, 'NO.QTY', style)
+        worksheet.write(2, 4, 'UNIT', style)
+        worksheet.write(2, 5, 'UNIT OF MEASURE', style)
+        worksheet.write(2, 6, 'UNIT PRICE', style)
+        worksheet.write(2, 7, 'TAX PERCENTAGE', style)
+        worksheet.write(2, 8, 'TAX AMOUNT', style)
+        worksheet.write(2, 9, 'TOTAL', style)
+        worksheet.write(2, 10, 'TOTAL AMOUNT', style)
+
+        fp = StringIO()
+        workbook.save(fp)
+        data = base64.encodestring(fp.getvalue())
+        fp.close()
+
+        ids = self.env['ir.attachment'].search([('datas_fname','=','VendorBillCheckTemplate1.xls')]).ids
+        if ids:
+            base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+            download_url = '/web/content/' + str(ids[0]) + '?download=true'
+            return {
+                "type": "ir.actions.act_url",
+                "url": str(base_url) + str(download_url),
+            }
+
+        else:
+            base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+            attachment_obj = self.env['ir.attachment']
+            attachment_id = attachment_obj.create(
+                {'name': 'VendorBillCheck', 'datas_fname': filename , 'datas': data})
+            download_url = '/web/content/' + str(attachment_id.id) + '?download=true'
+            return {
+                "type": "ir.actions.act_url",
+                "url": str(base_url) + str(download_url),
+            }
+
+
+    @api.multi
     def import_vendor_bills_report(self):
         for rec in self:
             excel_data = []
@@ -302,15 +351,17 @@ class VendorBillCheck(models.Model):
             for row in range(sheet.nrows):
                 vals = []
                 first_col = True
-                if cnt < 2:
+                if cnt <= 2:
                     cnt += 1
                     continue
+
                 for col in range(sheet.ncols):
                     if first_col:
                         first_col = False
                         inv_date  = sheet.cell_value(row, col)
-                        a1_as_datetime = datetime.datetime(*xlrd.xldate_as_tuple(inv_date, wb.datemode))
-                        vals.append(str(a1_as_datetime))
+                        if inv_date:
+                            a1_as_datetime = datetime.datetime(*xlrd.xldate_as_tuple(inv_date, wb.datemode))
+                            vals.append(str(a1_as_datetime))
                     else:
                         vals.append(sheet.cell_value(row, col))
                 excel_data.append(vals)
