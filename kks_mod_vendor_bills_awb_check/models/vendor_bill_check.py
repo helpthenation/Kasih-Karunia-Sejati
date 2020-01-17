@@ -384,7 +384,7 @@ class VendorBillCheck(models.Model):
             import_data = []
             for dt in excel_data:
                 vals = {}
-                partner_id = self.env['res.partner'].search([('name','=ilike',dt[1])],limit=1)
+                partner_id = self.env['res.partner'].search([('name','ilike',dt[1])],limit=1)
                 if rec.partner_id.id == partner_id.id:
                     uom_id = self.env['product.uom'].search([('name','ilike',dt[4])],limit=1)
                     is_match = False
