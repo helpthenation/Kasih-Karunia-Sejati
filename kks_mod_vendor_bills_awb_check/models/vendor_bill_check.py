@@ -389,7 +389,20 @@ class VendorBillCheck(models.Model):
                     uom_id = self.env['product.uom'].search([('name','ilike',dt[4])],limit=1)
                     is_match = False
                     for match_data in matching_data:
-                        price_total = float(dt[6]) + float(dt[8])
+                        price_total = 0
+                        sub_total = 0
+                        tax_amount = 0
+                        try:
+                            sub_total = float(dt[6])
+                        except:
+                            sub_total = 0
+
+                        try:
+                            tax_amount = float(dt[8])
+                        except:
+                            tax_amount = 0
+
+                        price_total = sub_total + tax_amount
 
                         #if str(dt[2]) == str(match_data.get('sku_id')) and str(dt[0]).split(' ')[0] == str(match_data.get('date')).split(' ')[0] and dt[3] == match_data.get('qty') and price_total == match_data.get('total'):
                         if str(dt[2]) == str(match_data.get('awb')) and dt[3] == match_data.get('qty') and price_total == match_data.get('total'):
