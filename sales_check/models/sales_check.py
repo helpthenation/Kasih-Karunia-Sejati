@@ -151,6 +151,7 @@ class sales_check(models.Model):
                         'company_id':line_obj.company_id,
                         'analytic_tag_ids' : [(6, 0, line_obj.analytic_tag_ids.ids)],
                         'so_line_id': line_obj.id,
+                        'check_state':'mismatch',
                         'partner_shipping_id': line_obj.order_id.partner_shipping_id.id
                     })
                     line_data.append([0,0,vals])
@@ -243,7 +244,7 @@ class sales_check(models.Model):
                 vals['sku_id'] = obj.sku_id.name or ''
                 vals['date'] = str(obj.so_line_id.order_id.date_order)
                 vals['qty'] = obj.product_uom_qty
-                vals['total'] = obj.price_subtotal
+                vals['total'] = obj.price_total
                 vals['sale_order_line_id'] = obj.so_line_id.id
                 vals['sale_check_line_id'] = obj.id
                 matching_data.append(vals)
@@ -282,7 +283,11 @@ class sales_check(models.Model):
                             sale_check_line_obj = self.env['sales.check.line'].browse(
                                 match_data.get('sale_check_line_id'))
                             sale_check_line_obj.check_state = 'match'
-                            break;
+                        else:
+                            sale_check_line_obj = self.env['sales.check.line'].browse(
+                                match_data.get('sale_check_line_id'))
+                            sale_check_line_obj.check_state = 'mismatch'
+
                     vals['customer_date'] = dt[0]
                     vals['partner_id'] = partner_id.id
                     vals['sku_number'] = str(dt[2])
@@ -305,7 +310,7 @@ class SalesCheckLine(models.Model):
 
     so_line_id = fields.Many2one('sale.order.line','Sale Order Line')
     so_name = fields.Char(related='so_line_id.order_id.name')
-    order_date = fields.Datetime(string='Date',related='so_line_id.order_id.confirmation_date')
+    order_date = fields.Datetime(string='Date',related='so_line_id.order_id.date_order')
     state = fields.Selection([
         ('draft', 'New'),
         ('validate', 'Validated'),
