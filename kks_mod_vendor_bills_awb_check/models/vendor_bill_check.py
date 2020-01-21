@@ -19,7 +19,7 @@ class PurchaseOrder(models.Model):
         ('mismatch', 'Mismatch'),
         ('partial', 'Partially Match'),
     ], string='Check Status', default='mismatch',compute='find_purchase_check_status')'''
-    awb = fields.Char('AWB No.',compute='find_awb_no',store=True)
+    awb = fields.Char('AWB No.')
     
     
     
@@ -27,68 +27,26 @@ class PurchaseOrder(models.Model):
         ('match', 'Match'),
         ('mismatch', 'Mismatch'),
         ('partial', 'Partially Match'),
-    ], string='Check Status', default=False, compute=False)
-    
-    #@api.depends('vendor_bill_check_line_ids.total_amount')
-    @api.multi
-    @api.depends('order_line.awb')
-    def find_awb_no(self):
-        for rec in self:
-            awb_lst = []
-            if rec.order_line:
-                for awb in rec.order_line.mapped('awb'):
-                    if awb and awb not in awb_lst:
-                        awb_lst.append(awb)
-                if awb_lst:
-                    rec.awb = ','.join(awb_lst)
-        
-    '''api.multi
+    ], string='Check Status', default='mismatch',compute='find_purchase_check_status')
+
+
+    api.multi
     def find_purchase_check_status(self):
         for rec in self:
-            match_count  = 0
+            match_count = 0
             mismatch_count = 0
             for order_line in rec.order_line:
                 if order_line.check_status == 'match':
-                    match_count +=1
+                    match_count += 1
                 else:
-                    mismatch_count +=1
+                    mismatch_count += 1
             if len(rec.order_line.ids) == match_count:
                 rec.check_state = 'match'
             elif len(rec.order_line.ids) == mismatch_count:
                 rec.check_state = 'mismatch'
             else:
-                rec.check_state = 'partial'''
-    
-    '''@api.model
-    def _prepare_picking(self):
-        for order in self:
-            awb_lst = []
-            awb = ''
-            if any([ptype in ['product', 'consu'] for ptype in order.order_line.mapped('product_id.type')]):
-                for awb in order.order_line.mapped('awb'):
-                    if awb not in awb_lst:
-                        awb_lst.append(awb)
-            
-            if awb_lst:
-                awb = ','.join(awb_lst)
+                rec.check_state = 'partial'
 
-            if not self.group_id:
-                self.group_id = self.group_id.create({
-                    'name': self.name,
-                    'partner_id': self.partner_id.id
-                })
-            if not self.partner_id.property_stock_supplier.id:
-                raise UserError(_("You must set a Vendor Location for this partner %s") % self.partner_id.name)
-            return {
-                'picking_type_id': self.picking_type_id.id,
-                'partner_id': self.partner_id.id,
-                'date': self.date_order,
-                'origin': self.name,
-                'location_dest_id': self._get_destination_location(),
-                'location_id': self.partner_id.property_stock_supplier.id,
-                'company_id': self.company_id.id,
-                'awb':awb,
-            }'''
         
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
@@ -223,8 +181,9 @@ class VendorBillCheck(models.Model):
                         'product_uom':line_obj.product_uom,
                         'currency_id' : line_obj.currency_id.id,
                         'company_id':line_obj.company_id,
-                        #'analytic_tag_ids' : [(6, 0, line_obj.analytic_tag_ids.ids)],
+                        'check_state': 'mismatch',
                         'po_line_id': line_obj.id,
+
                         'po_id': purchase_obj.id,
                         #'partner_shipping_id': line_obj.order_id.partner_shipping_id.id
                         'partner_shipping_id': line_obj.order_id.dest_address_id.id,
@@ -383,6 +342,9 @@ class VendorBillCheck(models.Model):
             import_data = []
             for dt in excel_data:
                 vals = {}
+                excel_awb_no = str(dt[2])
+                if '.' in str(dt[2]):
+                    excel_awb_no = str(dt[2]).split('.')[0]
                 partner_id = self.env['res.partner'].search([('name','ilike',dt[1])],limit=1)
                 if rec.partner_id.id == partner_id.id:
                     uom_id = self.env['product.uom'].search([('name','ilike',dt[4])],limit=1)
@@ -403,19 +365,18 @@ class VendorBillCheck(models.Model):
 
                         price_total = sub_total + tax_amount
 
-                        #if str(dt[2]) == str(match_data.get('sku_id')) and str(dt[0]).split(' ')[0] == str(match_data.get('date')).split(' ')[0] and dt[3] == match_data.get('qty') and price_total == match_data.get('total'):
-                        if str(dt[2]) == str(match_data.get('awb')) and dt[3] == match_data.get('qty') and price_total == match_data.get('total'):
+                        if excel_awb_no == str(match_data.get('awb')).strip() and str(dt[0]).split(' ')[0] == str(match_data.get('date')).split(' ')[0] and dt[3] == match_data.get('qty') and price_total == match_data.get('total'):
                             is_match = True
-                            '''po_line_obj = self.env['purchase.order.line'].browse(match_data.get('sale_order_line_id'))
+                            po_line_obj = self.env['purchase.order.line'].browse(match_data.get('sale_order_line_id'))
                             po_line_obj.check_status = 'match'
 
                             vendor_bill_check_line_obj = self.env['vendor.bill.check.line'].browse(
                                 match_data.get('sale_check_line_id'))
-                            vendor_bill_check_line_obj.check_state = 'match'''
-                            break;
+                            vendor_bill_check_line_obj.check_state = 'match'
+
                     vals['vendor_date'] = dt[0]
                     vals['partner_id'] = partner_id.id
-                    vals['awb_exc'] = str(dt[2])
+                    vals['awb_exc'] = excel_awb_no
                     vals['qty'] = dt[3]
                     vals['product_uom'] = uom_id.id
                     vals['price_unit'] = dt[5]
@@ -482,8 +443,6 @@ class VendorBillCheckLine(models.Model):
 
 
     company_id = fields.Many2one(related='order_id.company_id', string='Company', store=True, readonly=True)
-    #analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
-    #sku_id = fields.Many2one('sku.sku', string="No.SKU")
     awb = fields.Char('AWB No.')
     currency_id = fields.Many2one("res.currency", related='order_id.currency_id', string="Currency", readonly=True)
 
