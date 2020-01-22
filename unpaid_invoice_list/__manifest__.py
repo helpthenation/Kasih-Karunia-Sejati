@@ -27,5 +27,6 @@
         'report/report_menu.xml',
         'wizard/generate_unpaid_inv_wizard.xml',
         'views/unpaid_invoice_view.xml',
+        'wizard/export_unpaid_invoice_view.xml',
     ],
 }

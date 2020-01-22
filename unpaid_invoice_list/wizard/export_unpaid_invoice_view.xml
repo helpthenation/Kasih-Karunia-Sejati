@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="ir_actions_server_export_unpaid_invoice_excel" model="ir.actions.server">
+            <field name="name">Export Unpaid Invoice</field>
+            <field name="model_id" ref="model_unpaid_invoice"/>
+            <field name="state">code</field>
+            <field name="code">action = model.export_unpaid_invoice()</field>
+        </record>
+
+        <record id="id_export_unpaid_invoice" model="ir.values">
+            <field name="model_id" ref="model_unpaid_invoice" />
+            <field name="name">Export Unpaid Invoice</field>
+            <field name="key2">client_action_multi</field>
+            <field eval="'ir.actions.server,%d'%ir_actions_server_export_unpaid_invoice_excel" name="value"/>
+            <field name="key">action</field>
+            <field name="model">unpaid.invoice</field>
+        </record>
+
+
+        <record id="view_export_unpaid_invoice_form" model="ir.ui.view">
+            <field name="name">export.unpaid.invoice.form</field>
+            <field name="model">export.unpaid.invoice</field>
+            <field name="arch" type="xml">
+                <form string="Unpaid Invoice Excel">
+                    <group>
+                        <field name="excel_file" readonly="1" filename="file_name"/>
+                        <field name="file_name" invisible="1"/>
+                    </group>
+                    <footer>
+                       <button string="Close" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_unpaid_invoice_excel" model="ir.actions.act_window">
+            <field name="name">Unpaid Invoice Excel</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">export.unpaid.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_export_unpaid_invoice_form"/>
+            <field name="target">new</field>
+        </record>
+
+</odoo>
