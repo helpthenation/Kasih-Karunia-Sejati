@@ -78,6 +78,7 @@
                                     <field name="xls_file" filename="datas_fname"/>
                                     <field name="datas_fname" invisible="True"/>
                                     <button string="Import customer sales Import" name="import_customer_sales_import" type="object" class="btn-primary"/>
+                                    <button string="Download Template" name="download_template_excel" type="object" class="btn-primary"/>
                                 </group>
 
                                 <field name="sales_check_line_ids" editable="bottom">

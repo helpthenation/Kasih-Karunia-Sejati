@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
 import odoo.addons.decimal_precision as dp
 from xlrd import open_workbook
+import xlwt
+import xlsxwriter
+from cStringIO import StringIO
 from odoo import api, exceptions, fields, models, _, tools, registry
-from odoo.osv import osv
-from odoo.exceptions import UserError, ValidationError
+from datetime import datetime
 import xlrd ,datetime
 import base64
 import io
@@ -89,44 +90,50 @@ class sales_check(models.Model):
         self.state = 'validate'
 
     @api.multi
-    def action_create_invoice(self):
-        return True
-        # invoice_line_data = []
-        # for rec in self.sales_check_line_ids:
-        #     if rec.is_checked:
-        #         account_id = self.env['ir.property'].get('property_account_income_categ_id', 'product.category')
-        #
-        #         if not account_id:
-        #             raise UserError(
-        #                 _(
-        #                     'There is no income account defined for this product: "%s". You may have to install a chart of account from Accounting app, settings menu.') %
-        #                 (rec.product_id.name,))
-        #
-        #         vals = {
-        #             'name': rec.product_id.name,
-        #             'origin': rec.sales_check_id.name,
-        #             'account_id': account_id and account_id.id,
-        #             'price_unit': rec.product_id.list_price,
-        #             'quantity': rec.qty,
-        #             'discount': 0.0,
-        #             'uom_id': rec.product_id.uom_id.id,
-        #             'product_id': rec.product_id.id,
-        #         }
-        #
-        #         invoice_line_data.append([0,0,vals])
-        #
-        #
-        # if  invoice_line_data:
-        #     invoice = self.env['account.invoice'].create({
-        #         'name': self.name,
-        #         'origin': self.name,
-        #         'type': 'out_invoice',
-        #         'reference': False,
-        #         'account_id': self.partner_id.property_account_receivable_id.id,
-        #         'partner_id': self.partner_id.id,
-        #         'invoice_line_ids':invoice_line_data
-        #     })
+    def download_template_excel(self):
+        filename = 'SalesCheckTemplate.xls'
+        workbook = xlwt.Workbook(encoding="UTF-8")
+        worksheet = workbook.add_sheet('Sheet1')
+        style = xlwt.easyxf('font:height 200, bold True, name Arial;align: horiz center; ')
 
+        worksheet.write(0, 0, 'CUSTOMER', style)
+        worksheet.write(0, 1, str(self.partner_id.name))
+
+        worksheet.write(2, 0, 'DATE', style)
+        worksheet.write(2, 1, 'CUSTOMER', style)
+        worksheet.write(2, 2, 'SKU', style)
+        worksheet.write(2, 3, 'NO.QTY', style)
+        worksheet.write(2, 4, 'UNIT OF MEASURE', style)
+        worksheet.write(2, 5, 'UNIT PRICE', style)
+        worksheet.write(2, 6, 'TAX PERCENTAGE', style)
+        worksheet.write(2, 7, 'TAX AMOUNT', style)
+        worksheet.write(2, 8, 'TOTAL', style)
+        worksheet.write(2, 9, 'TOTAL AMOUNT', style)
+
+        fp = StringIO()
+        workbook.save(fp)
+        data = base64.encodestring(fp.getvalue())
+        fp.close()
+
+        ids = self.env['ir.attachment'].search([('datas_fname', '=', 'VendorBillCheckTemplate1.xls')]).ids
+        if ids:
+            base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+            download_url = '/web/content/' + str(ids[0]) + '?download=true'
+            return {
+                "type": "ir.actions.act_url",
+                "url": str(base_url) + str(download_url),
+            }
+
+        else:
+            base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+            attachment_obj = self.env['ir.attachment']
+            attachment_id = attachment_obj.create(
+                {'name': 'SalesBillCheck', 'datas_fname': filename, 'datas': data})
+            download_url = '/web/content/' + str(attachment_id.id) + '?download=true'
+            return {
+                "type": "ir.actions.act_url",
+                "url": str(base_url) + str(download_url),
+            }
 
     @api.onchange('partner_id')
     def onchange_sales_check_partner(self):
@@ -225,7 +232,7 @@ class sales_check(models.Model):
             for row in range(sheet.nrows):
                 vals = []
                 first_col = True
-                if cnt < 2:
+                if cnt <= 2:
                     cnt += 1
                     continue
                 for col in range(sheet.ncols):
