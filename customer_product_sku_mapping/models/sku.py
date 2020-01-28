@@ -12,6 +12,15 @@ class sku(models.Model):
     customer = fields.Many2one('res.partner', string="Customer", domain=[('customer', '=', True)], required=True)
     sku_product_info_ids = fields.One2many('sku.product.info', 'sku_id', string="Products")
 
+    @api.constrains('name', 'customer')
+    def _check_name_customer(self):
+        for rec in self:
+            sku_ids = self.env['sku.sku'].search(
+                [('id', '!=', rec.id), ('name', 'ilike', rec.name), ('customer', '=', rec.customer.id)]).ids
+            if sku_ids:
+                user_warning = 'You cannot create duplicate sku number for same customer'
+                raise UserError(user_warning)
+
     def create_res_partner_sku(self):
         data = {}
         partner_obj = self.env['res.partner.sku']
@@ -76,6 +85,14 @@ class skuProductInfo(models.Model):
     int_ref = fields.Char(related="product_id.default_code", string="Internal Reference", required=True, store=True)
     product_id = fields.Many2one('product.product', string="Product", required=True)
 
+    @api.constrains('sku_id', 'product_id')
+    def _check_product_and_sku(self):
+        for rec in self:
+            sku_ids = self.env['sku.product.info'].search(
+                [('id', '!=', rec.id), ('sku_id', '=', rec.sku_id.id), ('product_id', '=', rec.product_id.id)]).ids
+            if sku_ids:
+                user_warning = 'Product should be unique for sku number.'
+                raise UserError(user_warning)
 
 class Partner(models.Model):
     _inherit = 'res.partner'
