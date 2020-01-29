@@ -82,6 +82,7 @@ class skuProductInfo(models.Model):
     _name = 'sku.product.info'
 
     sku_id = fields.Many2one('sku.sku', string="Sku Reference")
+    partner_id = fields.Many2one('res.partner',related='sku_id.customer')
     int_ref = fields.Char(related="product_id.default_code", string="Internal Reference", required=True, store=True)
     product_id = fields.Many2one('product.product', string="Product", required=True)
 
@@ -92,6 +93,10 @@ class skuProductInfo(models.Model):
                 [('id', '!=', rec.id), ('sku_id', '=', rec.sku_id.id), ('product_id', '=', rec.product_id.id)]).ids
             if sku_ids:
                 user_warning = 'Product should be unique for sku number.'
+                raise UserError(user_warning)
+            elif self.env['sku.product.info'].search(
+                [('id', '!=', rec.id), ('partner_id', '=', rec.sku_id.customer.id), ('product_id', '=', rec.product_id.id)]).ids:
+                user_warning = 'Product and sku number should be unique for customer.'
                 raise UserError(user_warning)
 
 class Partner(models.Model):
@@ -124,11 +129,13 @@ class SaleOrderLine(models.Model):
         if self.product_id:
             data = self.env['res.partner.sku'].search([('product_id', '=', self.product_id.id), ('partner_id', '=', self.order_id.partner_id.id)])
             sku_list = [d.sku_id.id for d in data]
-            if not sku_list:
-                domain.update({'domain': {'sku_id': [('id', 'in', [])]}})
-            domain.update({'domain': {'sku_id': [('id', 'in', sku_list)]}})
-        else:
-            domain.update({'domain': {'sku_id': [('id', 'in', [])]}})
+            if sku_list:
+                # domain.update({'domain': {'sku_id': [('id', 'in', sku_list)]}})
+                self.sku_id = sku_list[0]
+            # else:
+            #     domain.update({'domain': {'sku_id': [('id', 'in', [])]}})
+        # else:
+        #     domain.update({'domain': {'sku_id': [('id', 'in', [])]}})
         return domain
 
 
