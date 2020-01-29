@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="invoice_tree_area_region_view">
+            <field name="name">account.invoice.tree.area.region.view</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='number']" position="before">
+                    <field name="inv_area"/>
+                    <field name="inv_region"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="view_customer_area_region_form_inherited" model="ir.ui.view">
+            <field name="name">view.customer.region.area.invoice.form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form" />
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="inv_area"/>
+                    <field name="inv_region"/>
+                </field>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="view_account_invoice_area_region_filter">
+            <field name="name">account.invoice.select.area.region.filter</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group" position="inside">
+                    <filter string="inv_area" context="{'group_by':'inv_area'}"/>
+                    <filter string="inv_region" context="{'group_by':'inv_region'}"/>
+                </xpath>
+
+            </field>
+        </record>
+        
+    </data>
+</openerp>
